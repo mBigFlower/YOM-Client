@@ -1,0 +1,54 @@
+.file-select-root {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  height: 100%;
+}
+
+.file-select-spin {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 80%;
+  height: 100%;
+
+  .upload-part {
+    flex: 1;
+    margin: 20px;
+    border-bottom: 2px solid #eee;
+  }
+
+  .analyze-part {
+    margin: 20px;
+    align-self: end;
+    margin-right:  20px 60px 60px 0;
+    display: flex ;
+    align-items: center;
+
+    .time-zone-input {
+      width: 80px;
+      margin-left: 3px;
+      margin-right: 20px;
+    }
+  }
+
+  .video {
+    width: 300px;
+    height: 188px;
+  }
+}
+
+
+.file-select-info-wrap {
+  display: flex;
+  flex-direction: column;
+
+  .file-select-info {
+    flex: 1;
+    margin: 20px;
+  }
+}
+
+:deep(.arco-upload-progress) {
+  display: none;
+}

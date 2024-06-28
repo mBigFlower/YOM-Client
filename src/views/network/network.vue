@@ -1,0 +1,177 @@
+<template>
+  <div class="network-root">
+    <NetworkFilter @on-input-changed="onInputChanged" @on-status-changed="onStatusChanged"></NetworkFilter>
+    <div class="network-main">
+      <div class="network-table-wrap" :style="tableWrapStyle">
+        <a-table class="network-table" column-resizable :bordered="{ cell: true }" :columns="columns" :stripe="true"
+          :data="networkFiltered" :pagination="paginationProps" @column-resize="handleResize"
+          @cell-click="handleCellClick" :scrollbar="false" @page-change="onPageChanged"
+          @page-size-change="onPageSizeChanged" :scroll="{ x: '100%', y: '100%' }">
+          <template #requestPathName="{ record }">
+            {{ record.basicInfo.requestPathName }}
+          </template>
+          <template #requestMethod="{ record }">
+            <span>{{ record.basicInfo.requestMethod }}</span>
+          </template>
+          <template #status="{ record }">
+            <span>
+              {{ record.basicInfo.status }} {{ record.basicInfo.statusText }}
+            </span>
+          </template>
+          <template #type="{ record }">
+            <span>{{ record.basicInfo.type }}</span>
+          </template>
+          <template #duration="{ record }">
+            <span>{{ record.basicInfo.duration }}</span>
+          </template>
+          <template #timestamp="{ record }">
+            <span>{{ timestamp2dateTimeMs(record.basicInfo.timestamp) }}</span>
+          </template>
+        </a-table>
+      </div>
+      <NetworkDetail v-model:visible="detailVisible" :data="detailData">
+      </NetworkDetail>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, reactive } from 'vue'
+import { useNetworkStore } from '@/store/network'
+import { timestamp2dateTimeMs } from '@/utils/date-utils';
+import NetworkDetail from './network-detail.vue';
+import NetworkFilter from './network-filter.vue';
+import moment from 'moment';
+const networkStore = useNetworkStore();
+const columnWidth = ref(500); // 初始列宽度
+const detailVisible = ref(false)
+const detailData = ref(null)
+
+const props = defineProps({
+  startTime: {
+    required: false,
+  },
+  endTime: {
+    required: false,
+  },
+});
+
+const paginationProps = reactive({
+  pageSize: 18,
+  current: 1,
+  showTotal: true,
+  showJumper: true,
+  showPageSize: true,
+});
+
+const columns = [
+  {
+    title: 'Name',
+    slotName: 'requestPathName',
+    width: columnWidth,
+    ellipsis: true,
+    tooltip: true,
+  },
+  {
+    title: 'Method',
+    width: 100,
+    slotName: 'requestMethod',
+  },
+  {
+    title: 'Status',
+    width: 100,
+    slotName: 'status',
+  },
+  {
+    title: 'Type',
+    width: 110,
+    slotName: 'type',
+  },
+  {
+    title: 'Send Time',
+    slotName: 'timestamp',
+  },
+  {
+    title: 'Duration',
+    slotName: 'duration',
+  },
+];
+
+// #region 数据过滤
+const filterParams = reactive({
+  text: '',
+  status: '',
+})
+
+const networkFiltered = computed(() => {
+  console.log('networkFiltered', props.startTime, props.endTime);
+  const startTimestamp = moment(props.startTime || '1997-01-01 00:00:00').valueOf() / 1000;
+  const endTimestamp = moment(props.endTime || '2080-01-01 00:00:00').valueOf() / 1000;
+  console.log('networkFiltered startTimestamp', startTimestamp);
+  console.log('networkFiltered endTimestamp', endTimestamp);
+  return networkStore.shownNetworks.filter((network) => {
+    const isUrlMatch = network.basicInfo.requestUrl?.includes(filterParams.text);
+    const isStatusMatch = checkStatusMatch(network.basicInfo.status);
+    const isTimeMatch = checkTimeMatch(startTimestamp, endTimestamp, network.basicInfo.timestamp);
+    return isUrlMatch && isStatusMatch && isTimeMatch
+  });
+});
+
+function onInputChanged(val) {
+  console.log('onInputChanged', val);
+  filterParams.text = val;
+}
+
+function onStatusChanged(val) {
+  console.log('onStatusChanged', val);
+  filterParams.status = val;
+}
+
+function checkTimeMatch(startTimestamp, endTimestamp, timeStamp) {
+  return timeStamp >= startTimestamp && timeStamp <= endTimestamp;
+}
+function checkStatusMatch(status) {
+  if (!filterParams.status) return true;
+  if (filterParams.status === '200') return status == 200;
+  if (filterParams.status === '4**') return status >= 400 && status < 500;
+  if (filterParams.status === '5**') return status >= 500 && status < 600;
+  if (filterParams.status === 'others') return status < 200 || status >= 600;
+}
+// #endregion
+
+const tableWrapStyle = computed(() => {
+  if (detailVisible.value)
+    return {
+      width: `${columnWidth.value + 1}px`,
+      display: 'block',
+    }
+  const maxWidth = window.innerWidth - 201;
+  console.log('tableWrapStyle maxWidth', maxWidth);
+  return {
+    maxWidth: `${maxWidth + 1}px`,
+    minWidth: '1000px',
+    display: 'flex',
+  };
+});
+
+function handleResize(dataIndex, width) {
+  if (dataIndex !== '__arco_data_index_0') return;
+  columnWidth.value = width;
+  console.log('handleResize columnWidth', columnWidth.value);
+}
+function handleCellClick(record, column) {
+  if (column.dataIndex !== '__arco_data_index_0') return
+  detailVisible.value = true
+  detailData.value = record
+}
+
+function onPageChanged(page) {
+  paginationProps.current = page;
+}
+function onPageSizeChanged(pageSize) {
+  paginationProps.pageSize = pageSize;
+}
+</script>
+<style scoped lang="less">
+@import url('./network.less');
+</style>

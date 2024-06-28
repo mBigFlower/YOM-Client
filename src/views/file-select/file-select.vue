@@ -1,0 +1,189 @@
+<template>
+  <div class="file-select-root">
+    <a-spin class="file-select-spin" :loading="loading" tip="This may take a while...">
+      <div class="upload-part">
+        <a-upload action="/" :auto-upload="false" :limit="5" multiple accept=".json" @before-upload="beforeLogUpload"
+          @before-remove="onBeforeRemoveConsole" :custom-icon="getCustomIcon()">
+          <template #upload-button>
+            <a-button>
+              选择 Console 日志
+            </a-button>
+          </template>
+        </a-upload>
+      </div>
+      <div class="upload-part">
+        <a-upload action="/" :auto-upload="false" :limit="5" multiple accept=".json"
+          @before-upload="beforeNetworkUpload" @before-remove="onBeforeRemoveNetwork">
+          <template #upload-button>
+            <a-button>
+              选择 Network 日志
+            </a-button>
+          </template>
+        </a-upload>
+      </div>
+      <div class="upload-part">
+        <video v-show="mediaSrc" ref="videoRef" class="video" autoplay controls></video>
+        <a-upload action="/" :auto-upload="false" :limit="1" v-model:file-list="mediaStore.mediaFiles"
+          @before-upload="beforeMediaUpload" @before-remove="onBeforeRemoveMedia" accept="video/*">
+          <template #upload-button>
+            <a-button>
+              选择 Media 文件
+            </a-button>
+          </template>
+        </a-upload>
+      </div>
+      <div class="analyze-part">
+        <span>Time Zone:</span>
+        <a-input-number class="time-zone-input" v-model="timeOffset" :step="1" :precision="0" :min="-12" :max="12"
+          height="30px" />
+        <a-button type="primary" @click="onAnalyzeClicked">Start</a-button>
+      </div>
+    </a-spin>
+    <div class="file-select-info-wrap" v-if="false">
+      <a-descriptions class="file-select-info" :data="consoleInfo" :size="size" title="Console Info" :column="1" />
+      <a-descriptions class="file-select-info" :data="networkInfo" :size="size" title="Network Info" :column="1" />
+      <a-descriptions class="file-select-info" :data="mediaInfo" :size="size" title="Media Info" :column="1" />
+      <div class="file-select-info"></div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { useConsoleStore } from '@/store/console'
+import { useNetworkStore } from '@/store/network'
+import { useMediaStore } from '@/store/media'
+import { setTimeOffset } from '@/utils/date-utils'
+
+import { useRouter } from "vue-router";
+const router = useRouter();
+const consoleStore = useConsoleStore();
+const networkStore = useNetworkStore();
+const mediaStore = useMediaStore();
+
+const videoRef = ref()
+
+const mediaSrc = ref()
+
+const loading = ref(false)
+
+//#region Console 日志
+const beforeLogUpload = async (file) => {
+  try {
+    console.log('beforeLogUpload', file);
+    return consoleStore.addOriginConsoleFile(file);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+function onBeforeRemoveConsole(file) {
+  return new Promise((resolve, reject) => {
+    console.log('onBeforeRemoveConsole', file);
+    consoleStore.removeOriginConsoleFile(file);
+    resolve(true)
+  });
+}
+const getCustomIcon = () => {
+  return {
+    fileName: (file) => {
+      console.log('file', file);
+      const size = file?.file?.size;
+      const sizeKB = size < 1024 ? 1 : Math.ceil(size / 1024);
+      return `[${sizeKB}KB] ${file.name}`
+    },
+  };
+};
+//#endregion
+
+//#region Network 网络
+const beforeNetworkUpload = async (file) => {
+  try {
+    networkStore.addNetworkFile(file);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+function onBeforeRemoveNetwork(file) {
+  return new Promise((resolve, reject) => {
+    console.log('onBeforeRemoveNetwork');
+    networkStore.removeNetworkFile(file);
+    resolve(true)
+  });
+}
+//#endregion
+
+//#region Media 媒体
+const beforeMediaUpload = async (file) => {
+  try {
+    const url = URL.createObjectURL(file);
+    mediaSrc.value = url;
+    console.log('mediaSrc', mediaSrc.value);
+    videoRef.value.src = url;
+    mediaStore.setMediaSrc(url)
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+function onBeforeRemoveMedia() {
+  return new Promise((resolve, reject) => {
+    console.log('onBeforeRemoveMedia');
+    mediaSrc.value = ''
+    videoRef.value.src = ''
+    mediaStore.clear();
+    resolve(true)
+  });
+}
+//#endregion
+
+const timeOffset = ref(Number(localStorage.getItem('timeOffset')) || -3)
+/**
+ * 开始分析数据
+ */
+function onAnalyzeClicked() {
+  console.log('onAnalyzeClicked', consoleStore.originConsoleFiles);
+  setTimeOffset(timeOffset.value)
+  consoleStore.build()
+  networkStore.build()
+  mediaStore.setMediaSrc(mediaSrc.value)
+  if (consoleStore.originConsoleFiles.length > 0)
+    return router.push("/console")
+  if (networkStore.originNetworkFiles.length > 0)
+    return router.push("/network")
+  if (mediaSrc.value?.length > 0)
+    return router.push("/media")
+}
+//#region 数据信息显示
+const consoleInfo = ref([{
+  label: 'Start Time',
+  value: '',
+}, {
+  label: 'End Time',
+  value: '',
+}]);
+const networkInfo = ref([{
+  label: 'Start Time',
+  value: '',
+}, {
+  label: 'End Time',
+  value: '',
+}]);
+const mediaInfo = ref([{
+  label: 'Start Time',
+  value: '',
+}, {
+  label: 'End Time',
+  value: '',
+}, {
+  label: 'Duration',
+  value: '',
+}]);
+//#endregion
+</script>
+<style scoped lang="less">
+@import url('./file-select.less');
+</style>

@@ -1,0 +1,35 @@
+.all-in-one-root {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+
+  .split-level1 {
+    flex: 1;
+    overflow: auto;
+    width: 100%;
+  }
+
+  .split-level2 {
+    height: 100%;
+    width: 100%;
+    :deep(.arco-split-pane-first) {
+      overflow: hidden !important;
+    }
+  }
+}
+
+.all-in-one-progress {
+  padding: 6px 20px;
+  display: flex;
+
+  .progress-slider {
+    flex: 1;
+    margin: 0 10px;
+  }
+}
+
+:deep(.arco-slider-btn):first-of-type {
+  /* 在这里添加你的样式 */
+}
