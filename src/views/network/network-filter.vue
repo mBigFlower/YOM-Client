@@ -1,8 +1,11 @@
 <template>
   <div class="network-filter">
-    <a-input placeholder="Name Filter" @input="onInputChanged"></a-input>
+    <a-input class="network-filter-input" placeholder="Name Filter" @input="onInputChanged"></a-input>
     <div class="status">
-      <a-select placeholder="Status Filter" :options="options" @change="onStatusChanged" allow-clear></a-select>
+      <a-select placeholder="Status Filter" :options="statusOptions"
+       multiple allow-search allow-clear
+       @change="onStatusChanged"
+        ></a-select>
     </div>
   </div>
 </template>

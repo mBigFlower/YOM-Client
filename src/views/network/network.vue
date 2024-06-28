@@ -1,6 +1,7 @@
 <template>
   <div class="network-root">
-    <NetworkFilter @on-input-changed="onInputChanged" @on-status-changed="onStatusChanged"></NetworkFilter>
+    <NetworkFilter :statusOptions="statusFilterOptions" @on-input-changed="onInputChanged"
+      @on-status-changed="onStatusChanged"></NetworkFilter>
     <div class="network-main">
       <div class="network-table-wrap" :style="tableWrapStyle">
         <a-table class="network-table" column-resizable :bordered="{ cell: true }" :columns="columns" :stripe="true"
@@ -17,9 +18,9 @@
             <span>{{ record.basicInfo.requestMethod }}</span>
           </template>
           <template #status="{ record }">
-            <span>
-              {{ record.basicInfo.status }} {{ record.basicInfo.statusText }}
-            </span>
+            <a-tooltip :content="record.basicInfo.statusText">
+              <span>{{ record.basicInfo.status }}</span>
+            </a-tooltip>
           </template>
           <template #type="{ record }">
             <span>{{ record.basicInfo.type }}</span>
@@ -106,6 +107,17 @@ const filterParams = reactive({
   status: '',
 })
 
+const statusFilterOptions = computed(() => {
+  const statusOptions = [];
+  networkStore.shownNetworks.forEach((network) => {
+    if (network.basicInfo.status === undefined) return;
+    if (!statusOptions.includes(network.basicInfo.status)) {
+      statusOptions.push(network.basicInfo.status)
+    }
+  });
+  return statusOptions
+});
+
 const networkFiltered = computed(() => {
   console.log('networkFiltered', props.startTime, props.endTime);
   const startTimestamp = moment(props.startTime || '1997-01-01 00:00:00').valueOf() / 1000;
@@ -134,11 +146,8 @@ function checkTimeMatch(startTimestamp, endTimestamp, timeStamp) {
   return timeStamp >= startTimestamp && timeStamp <= endTimestamp;
 }
 function checkStatusMatch(status) {
-  if (!filterParams.status) return true;
-  if (filterParams.status === '200') return status == 200;
-  if (filterParams.status === '4**') return status >= 400 && status < 500;
-  if (filterParams.status === '5**') return status >= 500 && status < 600;
-  if (filterParams.status === 'others') return status < 200 || status >= 600;
+  if (!filterParams.status?.length) return true;
+  return filterParams.status.includes(status);
 }
 // #endregion
 
