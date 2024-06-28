@@ -20,5 +20,5 @@ export default defineConfig({
   server: {
     host: "0.0.0.0"
   },
-  // base: 'yom', // 公网部署时，需要配置
+  // base: 'dist',
 })

@@ -1,10 +1,11 @@
 <template>
   <icon-music class="play-btn" :spin="isPlaying" @click="onPlayClick"></icon-music>
-  <audio ref="audioRef" src="/Yesterday Once More.mp3"></audio>
+  <audio ref="audioRef" :src="musicResource"></audio>
 </template>
 
 <script setup>
 import { IconMusic } from '@arco-design/web-vue/es/icon';
+import musicResource from '../../public/Yesterday Once More.mp3'
 import { ref } from 'vue';
 
 const audioRef = ref(null);
