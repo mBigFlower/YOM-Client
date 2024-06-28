@@ -6,7 +6,7 @@
           @before-remove="onBeforeRemoveConsole" :custom-icon="getCustomIcon()">
           <template #upload-button>
             <a-button>
-              选择 Console 日志
+              Select Console Files
             </a-button>
           </template>
         </a-upload>
@@ -16,7 +16,7 @@
           @before-upload="beforeNetworkUpload" @before-remove="onBeforeRemoveNetwork">
           <template #upload-button>
             <a-button>
-              选择 Network 日志
+              Select Network Files
             </a-button>
           </template>
         </a-upload>
@@ -27,7 +27,7 @@
           @before-upload="beforeMediaUpload" @before-remove="onBeforeRemoveMedia" accept="video/*">
           <template #upload-button>
             <a-button>
-              选择 Media 文件
+              Select Media Files
             </a-button>
           </template>
         </a-upload>

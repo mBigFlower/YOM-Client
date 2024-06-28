@@ -13,7 +13,7 @@
       <span class="date-time" :style="typeStyle(console.type)">{{ timestamp2dateTimeMs(console.timestamp) }}</span>
       <JsonViewer :show-array-index="false" v-for="item in getData(console.data)" :value="item || ''"></JsonViewer>
     </div>
-    <a-empty class="console-empty" v-if="isEmpty" />
+    <a-empty class="console-empty" v-if="isEmpty">No Data</a-empty>
   </div>
 </template>
 

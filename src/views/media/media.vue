@@ -1,7 +1,7 @@
 
 <template>
   <div class="media-root">
-    <a-empty v-if="isEmpty" />
+    <a-empty v-if="isEmpty">No Data</a-empty>
     <video v-else ref="videoRef" class="video" controls></video>
   </div>
 </template>

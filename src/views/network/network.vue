@@ -7,6 +7,9 @@
           :data="networkFiltered" :pagination="paginationProps" @column-resize="handleResize"
           @cell-click="handleCellClick" :scrollbar="false" @page-change="onPageChanged"
           @page-size-change="onPageSizeChanged" :scroll="{ x: '100%', y: '100%' }">
+          <template #empty>
+            <a-empty>No Data</a-empty>
+          </template>
           <template #requestPathName="{ record }">
             {{ record.basicInfo.requestPathName }}
           </template>
