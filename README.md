@@ -4,6 +4,6 @@ A Log Reviewer
 
 ## Version Update
 
-### v1.0.2
+### v1.1.0
 
-[2024-07-01] add the console panel's filter 
+[2024-07-01] add the console panel's filter

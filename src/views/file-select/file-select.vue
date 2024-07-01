@@ -6,7 +6,7 @@
           @before-remove="onBeforeRemoveConsole" :custom-icon="getCustomIcon()">
           <template #upload-button>
             <a-button>
-              Select Console Files
+              Select Console Files (limit: 5 files)
             </a-button>
           </template>
         </a-upload>
@@ -16,18 +16,18 @@
           @before-upload="beforeNetworkUpload" @before-remove="onBeforeRemoveNetwork">
           <template #upload-button>
             <a-button>
-              Select Network Files
+              Select Network Files (limit: 5 files)
             </a-button>
           </template>
         </a-upload>
       </div>
-      <div class="upload-part">
+      <div class="upload-media">
         <video v-show="mediaSrc" ref="videoRef" class="video" autoplay controls></video>
         <a-upload action="/" :auto-upload="false" :limit="1" v-model:file-list="mediaStore.mediaFiles"
           @before-upload="beforeMediaUpload" @before-remove="onBeforeRemoveMedia" accept="video/*">
           <template #upload-button>
             <a-button>
-              Select Media Files
+              Select Media Files (limit: 1 file)
             </a-button>
           </template>
         </a-upload>
