@@ -104,7 +104,7 @@ const columns = [
 // #region 数据过滤
 const filterParams = reactive({
   text: '',
-  status: '',
+  status: [],
 })
 
 const statusFilterOptions = computed(() => {

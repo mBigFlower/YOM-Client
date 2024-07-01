@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from "vue";
 import { readFile2Object } from '@/utils/file-utils'
-import { timestamp2dateTime } from '@/utils/date-utils'
+import { timestamp2dateTime, timestamp2dateTimeMs } from '@/utils/date-utils'
 
 export const useConsoleStore = defineStore("consoleStore", () => {
   // 用于读取的 File 数据
@@ -9,19 +9,29 @@ export const useConsoleStore = defineStore("consoleStore", () => {
   // 用于 Console 页面展示的数据
   const consoles = ref([]);
 
-  function build() {
+  async function build() {
     consoles.value = [];
-    originConsoleFiles.value.forEach(async (file) => {
+    for (let index = 0; index < originConsoleFiles.value.length; index++) {
+      const file = originConsoleFiles.value[index];
       const logData = await readFile2Object(file);
       consoles.value = consoles.value.concat(logData.flat());
+    }
+    console.log('build consoles', consoles.value);
+    beautyConsole();
+  }
+  /** 添加索引，用于搜索 */
+  function beautyConsole() {
+    consoles.value.forEach(item => {
+      item.dataStr = JSON.stringify(item.data);
+      item.time = timestamp2dateTimeMs(item.timestamp)
     })
   }
 
   function addOriginConsoleFile(file) {
-    if(!file) return;
+    if (!file) return;
     console.log('addOriginConsoleFile', file, file.name);
     const index = originConsoleFiles.value.findIndex(f => f.name === file.name);
-    if(index < 0) {
+    if (index < 0) {
       originConsoleFiles.value.push(file)
       originConsoleFiles.value.sort();
       return true;
@@ -29,7 +39,7 @@ export const useConsoleStore = defineStore("consoleStore", () => {
     return false;
   }
   function removeOriginConsoleFile(file) {
-    if(!file) return;
+    if (!file) return;
     originConsoleFiles.value = originConsoleFiles.value.filter(f => f.name !== file.name);
   }
 
