@@ -7,7 +7,8 @@
         <a-table class="network-table" column-resizable :bordered="{ cell: true }" :columns="columns" :stripe="true"
           :data="networkFiltered" :pagination="paginationProps" @column-resize="handleResize"
           @cell-click="handleCellClick" :scrollbar="false" @page-change="onPageChanged"
-          @page-size-change="onPageSizeChanged" :scroll="{ x: '100%', y: '100%' }">
+          :row-class="record => getRowClass(record)" @page-size-change="onPageSizeChanged"
+          :scroll="{ x: '100%', y: '100%' }">
           <template #empty>
             <a-empty>No Data</a-empty>
           </template>
@@ -52,10 +53,10 @@ const detailVisible = ref(false)
 const detailData = ref(null)
 
 const props = defineProps({
-  startTime: {
+  startTimestamp: {
     required: false,
   },
-  endTime: {
+  endTimestamp: {
     required: false,
   },
 });
@@ -119,15 +120,11 @@ const statusFilterOptions = computed(() => {
 });
 
 const networkFiltered = computed(() => {
-  console.log('networkFiltered', props.startTime, props.endTime);
-  const startTimestamp = moment(props.startTime || '1997-01-01 00:00:00').valueOf() / 1000;
-  const endTimestamp = moment(props.endTime || '2080-01-01 00:00:00').valueOf() / 1000;
-  console.log('networkFiltered startTimestamp', startTimestamp);
-  console.log('networkFiltered endTimestamp', endTimestamp);
+  console.log('networkFiltered', props.startTimestamp, props.endTimestamp);
   return networkStore.shownNetworks.filter((network) => {
     const isUrlMatch = network.basicInfo.requestUrl?.includes(filterParams.text);
     const isStatusMatch = checkStatusMatch(network.basicInfo.status);
-    const isTimeMatch = checkTimeMatch(startTimestamp, endTimestamp, network.basicInfo.timestamp);
+    const isTimeMatch = checkTimeMatch(props.startTimestamp, props.endTimestamp, network.basicInfo.timestamp * 1000);
     return isUrlMatch && isStatusMatch && isTimeMatch
   });
 });
@@ -143,6 +140,7 @@ function onStatusChanged(val) {
 }
 
 function checkTimeMatch(startTimestamp, endTimestamp, timeStamp) {
+  if (!startTimestamp && !endTimestamp) return true;
   return timeStamp >= startTimestamp && timeStamp <= endTimestamp;
 }
 function checkStatusMatch(status) {
@@ -175,7 +173,11 @@ function handleCellClick(record, column) {
   if (column.dataIndex !== '__arco_data_index_0') return
   detailVisible.value = true
   detailData.value = record
+  console.log('handleCellClick', record, column)
 }
+const getRowClass = (record) => {
+  return record.key === detailData.value?.key ? 'highlight-row' : '';
+};
 
 function onPageChanged(page) {
   paginationProps.current = page;
@@ -186,4 +188,11 @@ function onPageSizeChanged(pageSize) {
 </script>
 <style scoped lang="less">
 @import url('./network.less');
+</style>
+<style lang="less">
+.highlight-row {
+  .arco-table-td:first-child {
+    background-color: rgb(203, 203, 252) !important;
+  }
+}
 </style>

@@ -37,6 +37,21 @@ export const useNetworkStore = defineStore("networkStore", () => {
     initNetworkMaps();
   }
 
+  const getNetworkTimeRange = () => {
+    try {
+      if (realNetworks.value.length < 1) return [];
+      const startTime = realNetworks.value[0].timestamp;
+      if (realNetworks.value.length === 1) {
+        return [startTime, startTime]
+      }
+      const endTime = realNetworks.value[realNetworks.value.length - 1].timestamp;
+      return [startTime, endTime];
+    } catch (error) {
+      console.error(error, 'getNetworkTimeRange');
+      return [];
+    }
+  }
+
   function initNetworkMaps() {
     shownNetworks.value = analyzeNetworkData(realNetworks.value);
     console.log('networkMaps', shownNetworks.value);
@@ -53,6 +68,7 @@ export const useNetworkStore = defineStore("networkStore", () => {
     shownNetworks,
     addNetworkFile,
     removeNetworkFile,
+    getNetworkTimeRange,
     build,
     clear
   };

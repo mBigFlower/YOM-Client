@@ -20,6 +20,17 @@ export function timestamp2dateTime(timestamp, utcOffset = defaultTimeOffset) {
     return moment(timestamp * 1000).utcOffset(utcOffset).format(FORMAT);
 }
 /**
+ * 时间戳转换为日期时间
+ * @param {毫秒的时间戳} timestamp 
+ * @returns 
+ */
+export function timestamp2dateTimeNoOffset(timestamp, utcOffset = defaultTimeOffset) {
+  if (timestamp > 10000000000)
+    return moment(timestamp).format(FORMAT);
+  else
+    return moment(timestamp * 1000).format(FORMAT);
+}
+/**
  * 时间戳转换为日期时间 带毫秒
  * @param {毫秒的时间戳} timestamp 
  * @returns 
@@ -42,8 +53,7 @@ export function calcTimeFromRangePercent(startTime, endTime, percent) {
   const endTimestamp = moment(endTime).valueOf();
   const duration = endTimestamp - startTimestamp;
   const currentTimestamp = startTimestamp + duration * percent / 100;
-  const result = timestamp2dateTime(currentTimestamp);
-  return result;
+  return currentTimestamp;
 }
 /**
  * 返回两个时间戳的时间差

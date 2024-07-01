@@ -51,11 +51,11 @@ export const useConsoleStore = defineStore("consoleStore", () => {
   const getConsoleTimeRange = () => {
     try {
       if (consoles.value.length < 1) return [];
-      const startTime = timestamp2dateTime(consoles.value[0].timestamp);
+      const startTime = consoles.value[0].timestamp;
       if (consoles.value.length === 1) {
         return [startTime, startTime]
       }
-      const endTime = timestamp2dateTime(consoles.value[consoles.value.length - 1].timestamp);
+      const endTime = consoles.value[consoles.value.length - 1].timestamp;
       return [startTime, endTime];
     } catch (error) {
       console.error(error, 'getConsoleTimeRange');

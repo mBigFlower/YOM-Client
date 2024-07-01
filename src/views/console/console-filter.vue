@@ -1,6 +1,6 @@
 <template>
   <div class="console-filter">
-    <a-input class="console-filter-input" placeholder="Log Filter" allow-clear
+    <a-input class="console-filter-input" placeholder="Log Filter (Match case)" allow-clear
       @input="debouncedOnInputChanged" @clear="onCleared"></a-input>
     <div class="level">
       <a-select placeholder="Level Filter" :options="levelOptions" :default-value="['debug', 'log', 'warning', 'error']"

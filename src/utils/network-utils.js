@@ -20,6 +20,7 @@ export function analyzeNetworkData(networks) {
   networkMap.forEach((value, key) => {
     console.log('networkMap', key, value);
     result.push({
+      key,
       basicInfo: getBasicInfo(value),
       requestHeaders: getRequestHeaders(value),
       requestParams: getRequestParams(value),
