@@ -58,7 +58,6 @@ const consolefiltered = computed(() => {
   });
 });
 function checkTextMatch(inputStr, consoleItem) {
-  console.log('checkTextMatch', inputStr, consoleItem);
   if(consoleItem?.dataStr?.includes(inputStr)) return true;
   if(consoleItem?.time?.includes(inputStr)) return true;
   return false;
@@ -67,7 +66,9 @@ function checkTimeMatch(startTimestamp, endTimestamp, timeStamp) {
   return timeStamp >= startTimestamp && timeStamp <= endTimestamp;
 }
 function checkLevelMatch(level) {
-  return true;
+
+  if(filterParams.level.length === 0) return true;
+  return filterParams.level.includes(level);
 }
 //#endregion
 
@@ -78,11 +79,12 @@ function getData(data) {
 }
 
 function typeStyle(type) {
+  console.log('typeStyle', type)
   switch (type) {
     case 'error':
       return 'color: red;';
-    case 'warn':
-      return 'color: yellow;';
+    case 'warning':
+      return 'color: orange;';
     case 'info':
       return 'color: green;';
     default:

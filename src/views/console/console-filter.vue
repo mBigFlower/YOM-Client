@@ -2,8 +2,8 @@
   <div class="console-filter">
     <a-input class="console-filter-input" placeholder="Log Filter" @input="onInputChanged"></a-input>
     <div class="level">
-      <a-select placeholder="Level Filter" :options="levelOptions" :default-value="[0, 1, 2, 3]" multiple allow-search
-        allow-clear @change="onLevelChanged"></a-select>
+      <a-select placeholder="Level Filter" :options="levelOptions" :default-value="['debug', 'log', 'warning', 'error']"
+        multiple allow-search allow-clear @change="onLevelChanged"></a-select>
     </div>
   </div>
 </template>
@@ -16,10 +16,10 @@ const props = defineProps({
 });
 
 const levelOptions = [
-  { label: 'Verbose', value: 3 },
-  { label: 'Info', value: 2 },
-  { label: 'Warnings', value: 1 },
-  { label: 'Errors', value: 0 },
+  { label: 'Verbose', value: 'debug' },
+  { label: 'Info', value: 'log' },
+  { label: 'Warnings', value: 'warning' },
+  { label: 'Errors', value: 'error' },
 ]
 
 
