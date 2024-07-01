@@ -79,7 +79,6 @@ function getData(data) {
 }
 
 function typeStyle(type) {
-  console.log('typeStyle', type)
   switch (type) {
     case 'error':
       return 'color: red;';

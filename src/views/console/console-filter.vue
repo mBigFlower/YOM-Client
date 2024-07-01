@@ -1,6 +1,7 @@
 <template>
   <div class="console-filter">
-    <a-input class="console-filter-input" placeholder="Log Filter" @input="onInputChanged"></a-input>
+    <a-input class="console-filter-input" placeholder="Log Filter" allow-clear
+      @input="debouncedOnInputChanged" @clear="onCleared"></a-input>
     <div class="level">
       <a-select placeholder="Level Filter" :options="levelOptions" :default-value="['debug', 'log', 'warning', 'error']"
         multiple allow-search allow-clear @change="onLevelChanged"></a-select>
@@ -9,6 +10,7 @@
 </template>
 
 <script setup>
+import { debounce } from 'lodash';
 
 const emit = defineEmits(['onInputChanged', 'onLevelChanged']);
 
@@ -24,11 +26,14 @@ const levelOptions = [
 
 
 // #region 输入过滤
-
+const debouncedOnInputChanged = debounce(onInputChanged, 1000);
 function onInputChanged(val) {
+  console.log('onInputChanged', val);
   emit('onInputChanged', val);
 }
-
+function onCleared() {
+  emit('onInputChanged', '');
+}
 // #endregion
 
 //#region 请求结果过滤（200 还是 500 ？）
