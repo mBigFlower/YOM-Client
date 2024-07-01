@@ -1,14 +1,13 @@
-
 <template>
   <div class="all-in-one-root">
     <a-split direction="vertical" default-size="0.4" class="split-level1" min="0.3" max="0.8">
       <template #first>
-        <a-split class="split-level2" default-size="0.3" min="0.3" max="0.8">
+        <Network v-if="!mediaStore.mediaSrc" :start-time="currentStartTime" :end-time="currentEndTime" />
+        <a-split v-else class="split-level2" default-size="0.3" min="0.3" max="0.8">
           <template #first><a-typography-paragraph>
               <Media @mediaInfoUpdate="onMediaInfoUpdate" />
             </a-typography-paragraph></template>
           <template #second><a-typography-paragraph>
-              <Network :start-time="currentStartTime" :end-time="currentEndTime" />
             </a-typography-paragraph></template>
         </a-split>
       </template>
