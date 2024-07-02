@@ -13,7 +13,7 @@
       </div>
       <div class="upload-part">
         <a-upload action="/" :auto-upload="false" :limit="5" multiple accept=".json"
-          @before-upload="beforeNetworkUpload" @before-remove="onBeforeRemoveNetwork">
+          @before-upload="beforeNetworkUpload" @before-remove="onBeforeRemoveNetwork" :custom-icon="getCustomIcon()">
           <template #upload-button>
             <a-button>
               Select Network Files (limit: 5 files)
@@ -54,6 +54,7 @@ import { useConsoleStore } from '@/store/console'
 import { useNetworkStore } from '@/store/network'
 import { useMediaStore } from '@/store/media'
 import { setTimeOffset } from '@/utils/date-utils'
+import { formatFileSize } from '@/utils/file-utils'
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -87,10 +88,9 @@ function onBeforeRemoveConsole(file) {
 const getCustomIcon = () => {
   return {
     fileName: (file) => {
-      console.log('file', file);
-      const size = file?.file?.size;
-      const sizeKB = size < 1024 ? 1 : Math.ceil(size / 1024);
-      return `[${sizeKB}KB] ${file.name}`
+      const sizeStr = formatFileSize(file?.file?.size)
+      console.log('file', file, sizeStr);
+      return `[${sizeStr}] ${file.name}`
     },
   };
 };

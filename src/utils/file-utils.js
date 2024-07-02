@@ -11,3 +11,10 @@ export async function readFile2Object(file) {
     return false; // 阻止文件自动上传
   });
 }
+
+export function formatFileSize(size) {
+  if (!size) return '0KB'
+  if (size < 1024) return '1KB'
+  if (size < 1024 * 1024) return `${Math.ceil(size / 1024)}KB`
+  else return `${Math.ceil(size / 1024 / 1024)}MB`
+}
