@@ -192,7 +192,8 @@ function onPageSizeChanged(pageSize) {
 <style lang="less">
 .highlight-row {
   .arco-table-td:first-child {
-    background-color: rgb(203, 203, 252) !important;
+    color: rgb(28, 90, 247) !important;
+    font-weight: bold !important;
   }
 }
 </style>

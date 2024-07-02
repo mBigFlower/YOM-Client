@@ -4,6 +4,11 @@ A Log Reviewer
 
 ## Version Update
 
+### v1.2.2
+
+[2024-07-02 09:38]
+- `feat` add style for network's item selected
+
 ### v1.2.0
 
 [2024-07-01 09:11]
