@@ -7,6 +7,11 @@ A Log Reviewer
 ### v1.2.2
 
 [2024-07-02 09:38]
+- `fix` some labels to English 
+
+### v1.2.1
+
+[2024-07-02 09:38]
 - `feat` add style for network's item selected
 
 ### v1.2.0

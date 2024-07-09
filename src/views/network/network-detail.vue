@@ -46,19 +46,19 @@ const basicInfo = computed(() => {
   const { basicInfo } = props.data;
   const statusContent = !basicInfo ? undefined : `${basicInfo?.status} ${basicInfo?.statusText}`
   return [{
-    label: '请求网址',
+    label: 'Request URL',
     value: basicInfo?.requestUrl
   }, {
-    label: '请求方法',
+    label: 'Request Method',
     value: basicInfo?.requestMethod
   }, {
-    label: '状态代码',
+    label: 'Status Code',
     value: statusContent
   }, {
-    label: '远程地址',
+    label: 'Remote Address',
     value: basicInfo?.originAddress
   }, {
-    label: '请求时间',
+    label: 'Request Time',
     value: timestamp2dateTimeMs(basicInfo?.timestamp)
   }]
 });

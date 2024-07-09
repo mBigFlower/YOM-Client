@@ -62,7 +62,7 @@ const props = defineProps({
 });
 
 const paginationProps = reactive({
-  pageSize: 18,
+  pageSize: 16,
   current: 1,
   showTotal: true,
   showJumper: true,

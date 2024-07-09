@@ -6,6 +6,8 @@
       <span class="empty"></span>
       <MusicPlayer></MusicPlayer>
     </div>
+
+    <a-config-provider :locale="enUS">
     <a-layout style="overflow: hidden">
       <a-layout-sider hide-trigger collapsible>
         <div class="logo" />
@@ -34,6 +36,7 @@
         </keep-alive>
       </router-view>
     </a-layout>
+    </a-config-provider>
   </div>
 </template>
 
@@ -42,6 +45,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from "vue-router";
 import MusicPlayer from '@/components/music-player.vue';
 import { version } from '../package.json'
+import enUS from '@arco-design/web-vue/es/locale/lang/en-us';
 
 const router = useRouter();
 
