@@ -14,9 +14,6 @@ A log reviewer system.
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/mBigFlower/YOM-Client/blob/main/LICENSE)
 
 </div>
-## Pages
-
-https://mbigflower.github.io/yom/
 
 ## Description
 
@@ -54,6 +51,11 @@ https://mbigflower.github.io/yom/
 
 
 ## Version Update
+
+### v1.2.3
+
+[2024-07-10 16:03]
+- `feat` add github icon 
 
 ### v1.2.2
 
