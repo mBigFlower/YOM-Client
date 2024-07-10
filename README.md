@@ -1,5 +1,19 @@
-# Yesterday Once More
+<div align="center">
+  <a href="https://mbigflower.github.io/yom/" target="_blank">
+    <img alt="YOM Logo" width="200" src="./public/favicon.ico"/>
+  </a>
+</div>
+<div align="center">
+  <h1>Yesterday Once More</h1>
+</div>
 
+<div align="center">
+
+A log reviewer system.
+
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/mBigFlower/YOM-Client/blob/main/LICENSE)
+
+</div>
 ## Pages
 
 https://mbigflower.github.io/yom/
