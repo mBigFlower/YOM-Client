@@ -23,7 +23,7 @@ function onPlayClick() {
 
 <style lang="less">
 .play-btn {
-  margin: 1px 10px 0 10px;
+  margin: 0 10px 4px 4px;
   color: #5080a9 !important;
 }
 
