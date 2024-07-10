@@ -1,12 +1,13 @@
 # YOM-Client
 A Log Reviewer
 
+## 
 
 ## Version Update
 
 ### v1.2.2
 
-[2024-07-02 09:38]
+[2024-07-09 19:08]
 - `fix` some labels to English 
 
 ### v1.2.1

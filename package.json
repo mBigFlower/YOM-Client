@@ -1,19 +1,21 @@
 {
   "name": "YOM-Client",
   "private": true,
-  "version": "1.2.1",
+  "version": "1.2.3",
   "scripts": {
     "d": "vite",
     "dev": "vite",
     "build": "vite build",
     "github": "vite build --config ./vite.config.github.js",
-    "preview": "vite preview",
-    "lint": "eslint src"
+    "lib": "vite build --config ./yom-lib/vite.config.lib.js"
   },
   "dependencies": {
+    "dexie": "^4.0.7",
+    "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "pinia": "^2.0.30",
+    "string-random": "^0.1.3",
     "uuid": "^9.0.1",
     "vue": "^3.2.45",
     "vue-json-viewer": "3",
