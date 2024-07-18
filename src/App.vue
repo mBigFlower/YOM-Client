@@ -6,7 +6,7 @@
       <MusicPlayer></MusicPlayer>
       <span class="empty"></span>
       <a href="https://github.com/mBigFlower/YOM-Client" target="_blank" class="github-link">
-        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="28"
+        <img src="../public/GitHub-Mark.png" alt="GitHub" width="28"
           height="28">
       </a>
     </div>
