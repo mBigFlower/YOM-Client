@@ -2,8 +2,8 @@
   <div class="file-select-root">
     <a-spin class="file-select-spin" :loading="loading" tip="This may take a while...">
       <div class="upload-part">
-        <a-upload action="/" :auto-upload="false" :limit="5" multiple accept=".json" @before-upload="beforeLogUpload"
-          @before-remove="onBeforeRemoveConsole" :custom-icon="getCustomIcon()">
+        <a-upload id="consoleUpload" action="/" :auto-upload="false" :limit="5" multiple accept=".json"
+          @before-upload="beforeLogUpload" @before-remove="onBeforeRemoveConsole" :custom-icon="getCustomIcon()">
           <template #upload-button>
             <a-button>
               Select Console Files (limit: 5 files)
@@ -12,7 +12,7 @@
         </a-upload>
       </div>
       <div class="upload-part">
-        <a-upload action="/" :auto-upload="false" :limit="5" multiple accept=".json"
+        <a-upload id="networkUpload" action="/" :auto-upload="false" :limit="5" multiple accept=".json"
           @before-upload="beforeNetworkUpload" @before-remove="onBeforeRemoveNetwork" :custom-icon="getCustomIcon()">
           <template #upload-button>
             <a-button>
@@ -23,8 +23,9 @@
       </div>
       <div class="upload-media">
         <video v-show="mediaSrc" ref="videoRef" class="video" autoplay controls></video>
-        <a-upload action="/" :auto-upload="false" :limit="1" v-model:file-list="mediaStore.mediaFiles"
-          @before-upload="beforeMediaUpload" @before-remove="onBeforeRemoveMedia" accept="video/*">
+        <a-upload id="mediaUploadId" action="/" :auto-upload="false" :limit="1"
+          v-model:file-list="mediaStore.mediaFiles" @before-upload="beforeMediaUpload"
+          @before-remove="onBeforeRemoveMedia" accept="video/*">
           <template #upload-button>
             <a-button>
               Select Media Files (limit: 1 file)
@@ -36,7 +37,7 @@
         <span>Time Zone:</span>
         <a-input-number class="time-zone-input" v-model="timeOffset" :step="1" :precision="0" :min="-12" :max="12"
           height="30px" />
-        <a-button type="primary" @click="onAnalyzeClicked">Start</a-button>
+        <a-button id="startBtn" type="primary" @click="onAnalyzeClicked">Start</a-button>
       </div>
     </a-spin>
     <div class="file-select-info-wrap" v-if="false">
@@ -49,14 +50,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useConsoleStore } from '@/store/console'
 import { useNetworkStore } from '@/store/network'
 import { useMediaStore } from '@/store/media'
 import { setTimeOffset } from '@/utils/date-utils'
 import { formatFileSize } from '@/utils/file-utils'
-
 import { useRouter } from "vue-router";
+import { initFileSelectGuide } from '../../utils/guide-utils'
+
 const router = useRouter();
 const consoleStore = useConsoleStore();
 const networkStore = useNetworkStore();
@@ -67,6 +69,13 @@ const videoRef = ref()
 const mediaSrc = ref()
 
 const loading = ref(false)
+
+
+//#region 初始化指导
+nextTick(() => {
+  initFileSelectGuide();
+});
+//#endregion
 
 //#region Console 日志
 const beforeLogUpload = async (file) => {

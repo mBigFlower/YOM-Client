@@ -52,6 +52,11 @@ A log reviewer system.
 
 ## Version Update
 
+### v1.2.4
+
+[2024-07-18 10:58]
+- `feat` add guide action 
+
 ### v1.2.3
 
 [2024-07-10 16:03]
