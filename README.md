@@ -52,6 +52,11 @@ A log reviewer system.
 
 ## Version Update
 
+### v1.2.5
+
+[2024-07-18 10:58]
+- `feat` add red background for error network
+
 ### v1.2.4
 
 [2024-07-18 10:58]

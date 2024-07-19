@@ -176,7 +176,11 @@ function handleCellClick(record, column) {
   console.log('handleCellClick', record, column)
 }
 const getRowClass = (record) => {
-  return record.key === detailData.value?.key ? 'highlight-row' : '';
+  const rowClasses = [];
+  if (record.key === detailData.value?.key) rowClasses.push('highlight-row')
+  if (record.basicInfo?.status !== 200) rowClasses.push('error-row')
+  console.log('record', record)
+  return rowClasses
 };
 
 function onPageChanged(page) {
@@ -192,8 +196,14 @@ function onPageSizeChanged(pageSize) {
 <style lang="less">
 .highlight-row {
   .arco-table-td:first-child {
-    color: rgb(28, 90, 247) !important;
+    background-color: rgb(209, 227, 252) !important;
     font-weight: bold !important;
+  }
+}
+
+.error-row {
+  .arco-table-td:first-child {
+    color: red !important;
   }
 }
 </style>
