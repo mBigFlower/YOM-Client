@@ -67,7 +67,7 @@ const getPreview = (val, others = {}) => {
       } else if (subtype === 'node') {
         subVal = `#${subVal.nodeName}`;
       } else {
-        subVal = subVal.constructor.name;
+        subVal = subVal.constructor?.name;
       }
     } else {
       subVal = subVal === undefined ? 'undefined' : subVal.toString();
@@ -141,15 +141,15 @@ export function objectFormat(val, others = {}) {
     });
     // HTML Element
   } else if (subtype === 'node') {
-    res.className = val.constructor.name;
-    res.description = val.constructor.name;
+    res.className = val.constructor?.name;
+    res.description = val.constructor?.name;
   } else {
-    res.className = val.constructor.name;
-    res.description = val.constructor.name;
+    res.className = val.constructor?.name;
+    res.description = val.constructor?.name;
     preview && (res.preview = {
       type,
       subtype,
-      description: val.constructor.name,
+      description: val.constructor?.name,
       ...getPreview(val, { origin }),
     });
   }

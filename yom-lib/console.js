@@ -233,8 +233,8 @@ export default class Console {
             exception: {
               type: 'object',
               subtype: 'error',
-              className: error ? error.name : 'Error',
-              description: error ? error.stack : 'Script error.',
+              className: error?.name || 'Error',
+              description: error?.stack || 'Script error.',
             },
             stackTrace: {
               callFrames: Console.getCallFrames(error)
