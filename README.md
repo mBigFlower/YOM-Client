@@ -52,6 +52,11 @@ A log reviewer system.
 
 ## Version Update
 
+### v1.2.6
+
+[2024-07-23 17:07]
+- `feat` build yom's name with hash code
+
 ### v1.2.5
 
 [2024-07-18 10:58]

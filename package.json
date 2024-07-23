@@ -1,7 +1,7 @@
 {
   "name": "YOM-Client",
   "private": true,
-  "version": "1.2.5",
+  "version": "1.2.6",
   "scripts": {
     "d": "vite",
     "dev": "vite",

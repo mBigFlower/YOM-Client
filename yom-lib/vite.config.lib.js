@@ -18,8 +18,11 @@ export default defineConfig({
       name: 'yom',
       fileName: `yom`
     },
-    // rollupOptions: {
-    //   exclude: ['./public/**'],
-    // }
+    rollupOptions: {
+      output: {
+        entryFileNames: `yom-[hash].js`,
+        chunkFileNames: `yom-[hash].js`
+      },
+    },
   },
 })
