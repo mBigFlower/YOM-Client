@@ -4,7 +4,7 @@
     <div class="console-logs">
       <div v-for="console in consolefiltered">
         <span class="date-time" :style="typeStyle(console.type)">{{ console.time }}</span>
-        <JsonViewer :show-array-index="false" v-for="item in getData(console.data)" :value="item || ''"></JsonViewer>
+        <JsonViewer :show-array-index="false" v-for="item in getData(console.data)" :value="item"></JsonViewer>
       </div>
     </div>
     <a-empty class="console-empty" v-if="isEmpty">No Data</a-empty>
