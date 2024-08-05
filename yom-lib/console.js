@@ -169,20 +169,22 @@ export default class Console {
         // let caller = stack[2];
         // console.debug('caller', Console.getCallFrames(), stack)
 
-        const data = {
-          method: Event.consoleAPICalled,
-          params: {
-            type: methods[key],
-            args: args.map(arg => objectFormat(arg, { preview: true })),
-            executionContextId: 1,
-            timestamp: Date.now(),
-            stackTrace: {
-              // error, warn processing call stack
-              callFrames: ['error', 'warn'].includes(key) ? Console.getCallFrames() : [],
-            }
-          }
-        };
-        this.socketSend('console', data);
+
+        // TODO chenshenghua 临时屏蔽，后续涉及到实时获取时，还要用到 
+        // const data = {
+        //   method: Event.consoleAPICalled,
+        //   params: {
+        //     type: methods[key],
+        //     args: args.map(arg => objectFormat(arg, { preview: true })),
+        //     executionContextId: 1,
+        //     timestamp: Date.now(),
+        //     stackTrace: {
+        //       // error, warn processing call stack
+        //       callFrames: ['error', 'warn'].includes(key) ? Console.getCallFrames() : [],
+        //     }
+        //   }
+        // };
+        // this.socketSend('console', data);
       };
     });
     this.hookShareWorkerConsole(methods);
@@ -201,20 +203,21 @@ export default class Console {
         // let caller = stack[2];
         // console.debug('caller', Console.getCallFrames(), stack)
 
-        const data = {
-          method: Event.consoleAPICalled,
-          params: {
-            type: methods[key],
-            args: args.map(arg => objectFormat(arg, { preview: true })),
-            executionContextId: 1,
-            timestamp: Date.now(),
-            stackTrace: {
-              // error, warn processing call stack
-              callFrames: ['error', 'warn'].includes(key) ? Console.getCallFrames() : [],
-            }
-          }
-        };
-        this.socketSend('console', data);
+        // TODO chenshenghua 临时屏蔽，后续涉及到实时获取时，还要用到
+        // const data = {
+        //   method: Event.consoleAPICalled,
+        //   params: {
+        //     type: methods[key],
+        //     args: args.map(arg => objectFormat(arg, { preview: true })),
+        //     executionContextId: 1,
+        //     timestamp: Date.now(),
+        //     stackTrace: {
+        //       // error, warn processing call stack
+        //       callFrames: ['error', 'warn'].includes(key) ? Console.getCallFrames() : [],
+        //     }
+        //   }
+        // };
+        // this.socketSend('console', data);
       };
     })
   }
