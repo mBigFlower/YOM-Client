@@ -18,11 +18,11 @@ export default defineConfig({
       name: 'yom',
       fileName: `yom`
     },
-    rollupOptions: {
-      output: {
-        entryFileNames: `yom-[hash].js`,
-        chunkFileNames: `yom-[hash].js`
-      },
-    },
+    // rollupOptions: {
+    //   output: {
+    //     entryFileNames: `yom-[hash].js`,
+    //     chunkFileNames: `yom-[hash].js`
+    //   },
+    // },
   },
 })

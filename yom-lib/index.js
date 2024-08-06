@@ -2,7 +2,7 @@
 
 import { clearDataRegularly } from './datacenter';
 import { addOverlay } from './export-panel';
-import './record/EBML-import'
+import './record/EBML-vite.umd.js'
 import Network from './network';
 import Console from './console';
 
@@ -18,7 +18,7 @@ window.addEventListener('keydown', function (event) {
 /**
  * 初始化，重写 console 和 network
  */
-function registerProtocol() {
+export function registerProtocol() {
   new Network();
   new Console();
 }
