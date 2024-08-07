@@ -43,7 +43,7 @@ A log reviewer system.
 - [x] Batch import of logs 
 - [x] Add time zone configuration
 
-## Special thanks
+## Special Thanks
 
 - DongLiang Fan's idea
 - https://github.com/Nice-PLQ/devtools-remote-debugger : The original inspiration
@@ -52,43 +52,4 @@ A log reviewer system.
 
 ## Version Update
 
-### v1.2.6
-
-[2024-07-23 17:07]
-- `feat` build yom's name with hash code
-
-### v1.2.5
-
-[2024-07-18 10:58]
-- `feat` add red background for error network
-
-### v1.2.4
-
-[2024-07-18 10:58]
-- `feat` add guide action 
-
-### v1.2.3
-
-[2024-07-10 16:03]
-- `feat` add github icon 
-
-### v1.2.2
-
-[2024-07-09 19:08]
-- `fix` some labels to English 
-
-### v1.2.1
-
-[2024-07-02 09:38]
-- `feat` add style for network's item selected
-
-### v1.2.0
-
-[2024-07-01 09:11]
-- `feat` add the console panel's log level filter
-- `fix` fix the bug that the warning level is not orange color
-
-### v1.1.0
-
-[2024-07-01 09:00]
-- `feat` add the console panel's text filter
+Details of the version update: [README_VERSIONS](./README_VERSIONS.md)

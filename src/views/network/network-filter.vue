@@ -1,8 +1,8 @@
 <template>
   <div class="network-filter">
-    <a-input class="network-filter-input" placeholder="Name Filter" allow-clear
+    <a-input class="network-filter-input" placeholder="Name Filter (Match case)" allow-clear
       @input="debouncedOnNameInputChanged" @clear="onNameCleared"></a-input>
-    <a-input class="network-filter-input" placeholder="ResponseBody Filter" allow-clear
+    <a-input class="network-filter-input" placeholder="ResponseBody Filter (Match case)" allow-clear
       @input="debouncedOnResponseBodyInputChanged" @clear="onResponseBodyCleared"></a-input>
     <div class="status">
       <a-select placeholder="Status Filter" :options="statusOptions" multiple allow-search allow-clear
