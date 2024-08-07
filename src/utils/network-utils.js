@@ -92,13 +92,15 @@ function getResponseBody(data) {
   return responseBody
 }
 
-const TYPE_NOT_JSON = ['Script', 'Stylesheet', 'Document'];
+export const TYPE_NOT_JSON = ['Script', 'Stylesheet', 'Document'];
 function formatResponseBody(type, body){
   if(TYPE_NOT_JSON.includes(type)) {
     return body
   }
   try {
-    return JSON.parse(body);
+    // 为了过滤，这里直接返回原数据
+    return body.replace(/\s+/g, '');
+    // return JSON.parse(body);
   } catch (error) {
     return body;
   }

@@ -1,7 +1,9 @@
 <template>
   <div class="network-filter">
     <a-input class="network-filter-input" placeholder="Name Filter" allow-clear
-      @input="debouncedOnInputChanged" @clear="onCleared"></a-input>
+      @input="debouncedOnNameInputChanged" @clear="onNameCleared"></a-input>
+    <a-input class="network-filter-input" placeholder="ResponseBody Filter" allow-clear
+      @input="debouncedOnResponseBodyInputChanged" @clear="onResponseBodyCleared"></a-input>
     <div class="status">
       <a-select placeholder="Status Filter" :options="statusOptions" multiple allow-search allow-clear
         @change="onStatusChanged"></a-select>
@@ -12,7 +14,7 @@
 <script setup>
 import { debounce } from 'lodash';
 
-const emit = defineEmits(['onInputChanged', 'onStatusChanged']);
+const emit = defineEmits(['onNameChanged', 'onResponseBodyChanged', 'onStatusChanged']);
 
 const props = defineProps({
   statusOptions: {
@@ -27,13 +29,22 @@ const props = defineProps({
 });
 
 // #region 输入过滤
-const debouncedOnInputChanged = debounce(onInputChanged, 1000);
-function onInputChanged(val) {
-  emit('onInputChanged', val);
+const debouncedOnNameInputChanged = debounce(onNameInputChanged, 1000);
+function onNameInputChanged(val) {
+  emit('onNameChanged', val);
 }
-function onCleared() {
-  emit('onInputChanged', '');
+function onNameCleared() {
+  emit('onNameChanged', '');
 }
+
+const debouncedOnResponseBodyInputChanged = debounce(onResponseBodyInputChanged, 1000);
+function onResponseBodyInputChanged(val) {
+  emit('onResponseBodyChanged', val);
+}
+function onResponseBodyCleared() {
+  emit('onResponseBodyChanged', '');
+}
+
 // #endregion
 
 //#region 请求结果过滤（200 还是 500 ？）

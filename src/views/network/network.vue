@@ -1,7 +1,7 @@
 <template>
   <div class="network-root">
-    <NetworkFilter :statusOptions="statusFilterOptions" @on-input-changed="onInputChanged"
-      @on-status-changed="onStatusChanged"></NetworkFilter>
+    <NetworkFilter :statusOptions="statusFilterOptions" @on-name-changed="onNameInputChanged"
+      @on-response-body-changed="onResponseBodyInputChanged" @on-status-changed="onStatusChanged"></NetworkFilter>
     <div class="network-main">
       <div class="network-table-wrap" :style="tableWrapStyle">
         <a-table class="network-table" column-resizable :bordered="{ cell: true }" :columns="columns" :stripe="true"
@@ -46,6 +46,7 @@ import { useNetworkStore } from '@/store/network'
 import { timestamp2dateTimeMs } from '@/utils/date-utils';
 import NetworkDetail from './network-detail.vue';
 import NetworkFilter from './network-filter.vue';
+import { TYPE_NOT_JSON } from '@/utils/network-utils';
 import moment from 'moment';
 const networkStore = useNetworkStore();
 const columnWidth = ref(500); // 初始列宽度
@@ -104,7 +105,8 @@ const columns = [
 
 // #region 数据过滤
 const filterParams = reactive({
-  text: '',
+  nameText: '',
+  responseBodyText: '',
   status: [],
 })
 
@@ -122,16 +124,25 @@ const statusFilterOptions = computed(() => {
 const networkFiltered = computed(() => {
   console.log('networkFiltered', props.startTimestamp, props.endTimestamp);
   return networkStore.shownNetworks.filter((network) => {
-    const isUrlMatch = network.basicInfo.requestUrl?.includes(filterParams.text);
+    const isUrlMatch = network.basicInfo.requestUrl?.includes(filterParams.nameText);
+    if (!isUrlMatch) return false;
+    const isResponseBodyMatch = checkResponseBody(network.basicInfo.type, network.responseBody)
+    if (!isResponseBodyMatch) return false;
     const isStatusMatch = checkStatusMatch(network.basicInfo.status);
+    if (!isStatusMatch) return false;
     const isTimeMatch = checkTimeMatch(props.startTimestamp, props.endTimestamp, network.basicInfo.timestamp * 1000);
-    return isUrlMatch && isStatusMatch && isTimeMatch
+    return isTimeMatch
   });
 });
 
-function onInputChanged(val) {
-  console.log('onInputChanged', val);
-  filterParams.text = val;
+function onNameInputChanged(val) {
+  console.log('onNameInputChanged', val);
+  filterParams.nameText = val;
+}
+
+function onResponseBodyInputChanged(val) {
+  console.log('onResponseBodyInputChanged', val);
+  filterParams.responseBodyText = val;
 }
 
 function onStatusChanged(val) {
@@ -142,6 +153,10 @@ function onStatusChanged(val) {
 function checkTimeMatch(startTimestamp, endTimestamp, timeStamp) {
   if (!startTimestamp && !endTimestamp) return true;
   return timeStamp >= startTimestamp && timeStamp <= endTimestamp;
+}
+function checkResponseBody(type, responseBody) {
+  if (TYPE_NOT_JSON.includes(type)) return false
+  return responseBody?.includes(filterParams.responseBodyText);
 }
 function checkStatusMatch(status) {
   if (!filterParams.status?.length) return true;

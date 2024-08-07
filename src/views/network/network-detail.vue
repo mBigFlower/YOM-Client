@@ -1,4 +1,3 @@
-
 <template>
   <div v-if="visible" class="network-detail">
     <div class="network-detail-header">
@@ -9,11 +8,13 @@
         <a-descriptions :data="basicInfo" :column="1" />
       </a-collapse-item>
       <a-collapse-item header="Response Body" key="2">
-        <JsonViewer :preview-mode="true" :value="data.responseBody"></JsonViewer>
+        <JsonViewer :preview-mode="true" :value="responseBody" :show-double-quotes="true" :show-array-index="false">
+        </JsonViewer>
       </a-collapse-item>
       <a-collapse-item header="Request Param" key="3">
         <a-descriptions v-if="isRequestGet" :data="requestGetParam" :column="1" />
-        <JsonViewer v-else :preview-mode="true" :value="requestPostParam"></JsonViewer>
+        <JsonViewer v-else :preview-mode="true" :value="requestPostParam" :show-double-quotes="true"
+          :show-array-index="false"></JsonViewer>
       </a-collapse-item>
       <a-collapse-item header="Request Header" key="4">
         <a-descriptions :data="requestHeader" :column="1" />
@@ -29,6 +30,7 @@
 import { toRaw, computed } from 'vue'
 import JsonViewer from '@/components/json-viewer.vue'
 import { timestamp2dateTimeMs } from '@/utils/date-utils';
+import { TYPE_NOT_JSON } from '@/utils/network-utils';
 
 const emit = defineEmits(['update:visible']);
 
@@ -96,6 +98,14 @@ const requestGetParam = computed(() => {
   // 将请求参数转换为一个数组
   return Array.from(params, ([key, value]) => ({ label: key, value: value }));
 });
+const responseBody = computed(() => {
+  try {
+    if (TYPE_NOT_JSON.includes(props.data.basicInfo.type)) return props.data.responseBody
+    return JSON.parse(props.data.responseBody)
+  } catch (error) {
+    return undefined
+  }
+})
 
 function onCloseClicked() {
   emit('update:visible', false);
