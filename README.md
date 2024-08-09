@@ -17,8 +17,8 @@ A log reviewer system.
 
 ## Description
 
-- [yom-lib](./yom/README_DEV.md) store the logs(console and network) to IndexDB
-- [src](./yom-client/README.md) logs viewer
+- **yom-lib** store the logs(console and network) to IndexDB
+- **src** logs viewer
 
 ### yom-lib
 
