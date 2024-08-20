@@ -134,15 +134,15 @@ export async function exportNetworkData(startTime, endTime) {
 
 /**
  * 导出数据到本地
- * @param {*} data
- * @param {*} type
+ * @param {*} data 待导出的数据
+ * @param {*} type console 或 network
  */
 async function exportData(data, type) {
   if (data.length > 8888) return alert('too large, change time again plz')
   await downloadData(data, type);
 }
 
-async function downloadData(data, type) {
+export async function downloadData(data, type) {
   // 创建一个 ReadableStream
   let stream = new ReadableStream({
     start(controller) {
