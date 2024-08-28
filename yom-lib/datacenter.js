@@ -1,8 +1,10 @@
 import Dexie from 'dexie';
 import version from './v.json'
 import { makeString2NumberChar } from './common/utils'
+import { config, LogLevel } from './config'
 
 export function addConsole(type, timestamp, data) {
+  if (config.logLevel === LogLevel.None) return;
   dbAddConsole({ timestamp, type, data });
 }
 export async function getConsole(startTime, endTime) {
@@ -11,6 +13,7 @@ export async function getConsole(startTime, endTime) {
 
 
 export function addNetwork(data) {
+  if (config.networkEnable !== '1') return;
   // network 的时间戳是秒级别的，所以这里 *1000 转为毫秒
   const timestamp = data.params.timestamp * 1000 || Date.now();
   dbAddNetwork({ timestamp, data });
@@ -29,7 +32,7 @@ export function clearDataRegularly(_hours) {
 
 function clearDataByTime(_hours) {
   try {
-    const hours = _hours || localStorage.getItem('yom-log-rotate') || 12;
+    const hours = _hours || config.logRorate;
     console.info('clearDataRegularly', hours)
     // 获取 hours 小时之前的时间戳
     let hoursAgo = Date.now() - hours * 60 * 60 * 1000;
@@ -75,7 +78,7 @@ export function startClearInterval() {
   setInterval(() => {
     console.log('startClearInterval');
     clearDataRegularly();
-  }, 1000 * 60 * 20)
+  }, 1000 * 60 * 60)
 }
 
 //#region 数据库相关的基本语句

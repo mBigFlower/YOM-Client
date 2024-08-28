@@ -7,6 +7,7 @@ import { addOverlay } from './export-panel';
 import './record/EBML-vite.umd.js'
 import Network from './network';
 import Console from './console';
+import * as config from './config';
 
 /**
  * 快捷键唤醒日志导出面板
@@ -20,7 +21,7 @@ window.addEventListener('keydown', function (event) {
 /**
  * 初始化，重写 console 和 network
  */
-export function registerProtocol() {
+function registerProtocol() {
   new Network();
   new Console();
 }
@@ -30,7 +31,7 @@ export function registerProtocol() {
  * @param {number} endTime - 结束时间
  * @returns {Promise<unknown>} 一个 Promise，包含着调用 getConsole 方法返回的结果
  */
-export async function getConsoleList(startTime, endTime) {
+async function getConsoleList(startTime, endTime) {
   return await getConsole(startTime, endTime);
 }
 /**
@@ -39,7 +40,7 @@ export async function getConsoleList(startTime, endTime) {
  * @param {number} endTime - 结束时间
  * @returns {Promise<unknown>} 一个 Promise，包含着调用 getNetworks 方法返回的结果
  */
-export async function getNetworkList(startTime, endTime) {
+async function getNetworkList(startTime, endTime) {
   return await getNetworks(startTime, endTime);
 }
 
@@ -48,7 +49,7 @@ export async function getNetworkList(startTime, endTime) {
  * @param {*} data 待下载的数据
  * @param {*} type console 或 network
  */
-export async function downloadFile2Local(data, type) {
+async function downloadFile2Local(data, type) {
   await downloadData(data, type);
 }
 
@@ -59,7 +60,7 @@ export async function downloadFile2Local(data, type) {
  * 如果录制过程中出现错误，会将错误信息打印到控制台
  * @returns {Promise<{ startTime: number, endTime: number }>} 一个 Promise，包含着录制的开始和结束时间
  */
-export async function recordScreen() {
+async function recordScreen() {
   const options = {
     audio: true,
     video: {
@@ -76,5 +77,17 @@ export async function recordScreen() {
 
 registerProtocol();
 
-// 定期清理日志
-clearDataRegularly();
+// 程序启动后，自动清理日志一次
+setTimeout(() => {
+  clearDataRegularly();
+}, 1000 * 60);
+
+
+export default {
+  registerProtocol,
+  getConsoleList,
+  getNetworkList,
+  downloadFile2Local,
+  recordScreen,
+  ...config,
+}
