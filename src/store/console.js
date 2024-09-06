@@ -13,8 +13,10 @@ export const useConsoleStore = defineStore("consoleStore", () => {
     consoles.value = [];
     for (let index = 0; index < originConsoleFiles.value.length; index++) {
       const file = originConsoleFiles.value[index];
-      const logData = await readFile2Object(file);
-      consoles.value = consoles.value.concat(logData.flat());
+      const logData = await readFile2Object(file).catch(error => {
+        console.error('console readFile2Object', error);
+      })
+      if (logData) consoles.value = consoles.value.concat(logData.flat());
     }
     console.log('build consoles', consoles.value);
     beautyConsole();

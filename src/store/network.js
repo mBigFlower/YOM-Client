@@ -12,9 +12,9 @@ export const useNetworkStore = defineStore("networkStore", () => {
   const shownNetworks = ref([]);
 
   function addNetworkFile(file) {
-    if(!file) return;
+    if (!file) return;
     const index = originNetworkFiles.value.findIndex(f => f.name === file.name);
-    if(index < 0) {
+    if (index < 0) {
       originNetworkFiles.value.push(file)
       originNetworkFiles.value.sort();
       return true;
@@ -22,7 +22,7 @@ export const useNetworkStore = defineStore("networkStore", () => {
     return false;
   }
   function removeNetworkFile(file) {
-    if(!file) return;
+    if (!file) return;
     originNetworkFiles.value = originNetworkFiles.value.filter(f => f.name !== file.name);
   }
 
@@ -31,8 +31,11 @@ export const useNetworkStore = defineStore("networkStore", () => {
     realNetworks.value = [];
     for (let index = 0; index < originNetworkFiles.value.length; index++) {
       const file = originNetworkFiles.value[index];
-      const networkData = await readFile2Object(file);
-      realNetworks.value = realNetworks.value.concat(networkData.flat());
+      const networkData = await readFile2Object(file).catch(error => {
+        console.error('network readFile2Object', error);
+      });
+      if (networkData)
+        realNetworks.value = realNetworks.value.concat(networkData.flat());
     }
     initNetworkMaps();
   }
