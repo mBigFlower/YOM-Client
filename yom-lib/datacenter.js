@@ -141,6 +141,7 @@ export async function exportNetworkData(startTime, endTime) {
  * @param {*} type console 或 network
  */
 async function exportData(data, type) {
+  if (!data?.length) return alert('no data')
   if (data.length > 8888) return alert('too large, change time again plz')
   await downloadData(data, type);
 }
