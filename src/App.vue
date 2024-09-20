@@ -82,6 +82,7 @@ function onClickMenuItem(key) {
     font-size: 26px;
     font-weight: 600;
     margin-left: 10px;
+    padding: 2px;
     background: linear-gradient(to left, #6ea6bf, #000080);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
