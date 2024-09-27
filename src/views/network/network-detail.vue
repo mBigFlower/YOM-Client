@@ -8,13 +8,14 @@
         <a-descriptions :data="basicInfo" :column="1" />
       </a-collapse-item>
       <a-collapse-item header="Response Body" key="2">
-        <JsonViewer :preview-mode="true" :value="responseBody" :show-double-quotes="true" :show-array-index="false">
+        <JsonViewer :preview-mode="true" :value="responseBody" :show-double-quotes="true" :show-array-index="false"
+          :copyable="true">
         </JsonViewer>
       </a-collapse-item>
       <a-collapse-item header="Request Param" key="3">
         <a-descriptions v-if="isRequestGet" :data="requestGetParam" :column="1" />
         <JsonViewer v-else :preview-mode="true" :value="requestPostParam" :show-double-quotes="true"
-          :show-array-index="false"></JsonViewer>
+          :show-array-index="false" :copyable="true"></JsonViewer>
       </a-collapse-item>
       <a-collapse-item header="Request Header" key="4">
         <a-descriptions :data="requestHeader" :column="1" />
