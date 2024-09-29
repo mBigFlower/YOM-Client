@@ -16,7 +16,35 @@ export const LogLevel = {
 export const config = {
   logLevel: LogLevel.Debug,
   logRorate: DEFAULT_LOG_RORATE,
-  networkEnable: true
+  yomNetworkEnable: '1',
+  yomConsoleEnable: '1',
+  chromeConsoleEnable: '1',
+}
+
+export function setConfig(_config) {
+  if (_config.logLevel !== undefined) {
+    if (+logLevel === NaN || +logLevel < 0 || +logLevel > 4)
+      return console.error('Invalid log level');;
+    config.logLevel = _config.logLevel;
+    localStorage.setItem('yom-log-level', config.logLevel);
+  }
+  if (_config.logRorate !== undefined) {
+    config.logRorate = _config.logRorate;
+    localStorage.setItem('yom-log-rotate', config.logRorate);
+  }
+  if (_config.yomNetworkEnable !== undefined) {
+    config.yomNetworkEnable = _config.yomNetworkEnable;
+    localStorage.setItem('yom-network-enable', config.yomNetworkEnable);
+  }
+  if (_config.yomConsoleEnable !== undefined) {
+    config.yomConsoleEnable = _config.yomConsoleEnable
+    localStorage.setItem('yom-console-enable', config.yomConsoleEnable);
+  };
+  if (_config.chromeConsoleEnable !== undefined) {
+    config.chromeConsoleEnable = _config.chromeConsoleEnable;
+    localStorage.setItem('chrome-console-enable', config.chromeConsoleEnable);
+  }
+  return config;
 }
 
 export function setConfigLogLevel(logLevel) {
@@ -33,19 +61,33 @@ export function setConfigLogRorate(logRorate) {
   return true;
 }
 
-export function setNetworkEnable(isEnable) {
-  config.networkEnable = isEnable;
+export function setYomNetworkEnable(isEnable) {
+  config.yomNetworkEnable = isEnable;
   localStorage.setItem('yom-network-enable', isEnable);
+  return true;
+}
+export function setYomConsoleEnable(isEnable) {
+  config.yomConsoleEnable = isEnable;
+  localStorage.setItem('yom-console-enable', isEnable);
+  return true;
+}
+export function setChromeConsoleEnable(isEnable) {
+  config.chromeConsoleEnable = isEnable;
+  localStorage.setItem('chrome-console-enable', isEnable);
   return true;
 }
 
 function initConfig() {
   config.logLevel = localStorage.getItem('yom-log-level') || LogLevel.Debug;
   config.logRorate = localStorage.getItem('yom-log-rotate') || DEFAULT_LOG_RORATE;
-  config.networkEnable = localStorage.getItem('yom-network-enable') || '1';
+  config.yomNetworkEnable = localStorage.getItem('yom-network-enable') || '1';
+  config.yomConsoleEnable = localStorage.getItem('yom-console-enable') || '1';
+  config.chromeConsoleEnable = localStorage.getItem('chrome-console-enable') || '1';
   console.log('yom initConfig logLevel', config.logLevel)
-  console.log('yom initConfig logRorate', config.logRorate)
-  console.log('yom initConfig networkEnable', config.networkEnable)
+  console.log('yom initConfig logRorate', config.logRorate, 'h')
+  console.log('yom initConfig yomNetworkEnable', config.yomNetworkEnable)
+  console.log('yom initConfig yomConsoleEnable', config.yomConsoleEnable)
+  console.log('yom initConfig chromeConsoleEnable', config.chromeConsoleEnable)
 }
 
 initConfig();

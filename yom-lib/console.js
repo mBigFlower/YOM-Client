@@ -2,6 +2,7 @@ import { objectFormat, objectRelease, getObjectProperties } from './common/remot
 import { Event } from './common/protocol';
 import { addConsole, getConsole } from './datacenter';
 import { callsites } from './common/utils'
+import { config } from './config'
 
 export default class Console {
   namespace = 'Console';
@@ -26,6 +27,7 @@ export default class Console {
   };
 
   constructor() {
+    if (config.yomConsoleEnable !== "1") return;
     this.hookConsole();
     this.listenError();
   }
@@ -161,30 +163,8 @@ export default class Console {
     Object.keys(methods).forEach((key) => {
       const nativeConsoleFunc = window.console[key];
       window.console[key] = (...args) => {
-        nativeConsoleFunc(...args);
+        if (config.chromeConsoleEnable === '1') nativeConsoleFunc(...args);
         addConsole(methods[key], Date.now(), args);
-        // let error = new Error();
-        // let stack = error.stack.split('\n');
-        // // stack[0] 是 "Error"，stack[1] 是这个函数，stack[2] 是调用 console.log 的地方
-        // let caller = stack[2];
-        // console.debug('caller', Console.getCallFrames(), stack)
-
-
-        // TODO chenshenghua 临时屏蔽，后续涉及到实时获取时，还要用到 
-        // const data = {
-        //   method: Event.consoleAPICalled,
-        //   params: {
-        //     type: methods[key],
-        //     args: args.map(arg => objectFormat(arg, { preview: true })),
-        //     executionContextId: 1,
-        //     timestamp: Date.now(),
-        //     stackTrace: {
-        //       // error, warn processing call stack
-        //       callFrames: ['error', 'warn'].includes(key) ? Console.getCallFrames() : [],
-        //     }
-        //   }
-        // };
-        // this.socketSend('console', data);
       };
     });
     this.hookShareWorkerConsole(methods);
@@ -195,29 +175,8 @@ export default class Console {
     Object.keys(methods).forEach((key) => {
       const nativeConsoleFunc = self.console[key];
       self.console[key] = (...args) => {
-        nativeConsoleFunc(...args);
+        if (config.chromeConsoleEnable === '1') nativeConsoleFunc(...args);
         addConsole(methods[key], Date.now(), args);
-        // let error = new Error();
-        // let stack = error.stack.split('\n');
-        // // stack[0] 是 "Error"，stack[1] 是这个函数，stack[2] 是调用 console.log 的地方
-        // let caller = stack[2];
-        // console.debug('caller', Console.getCallFrames(), stack)
-
-        // TODO chenshenghua 临时屏蔽，后续涉及到实时获取时，还要用到
-        // const data = {
-        //   method: Event.consoleAPICalled,
-        //   params: {
-        //     type: methods[key],
-        //     args: args.map(arg => objectFormat(arg, { preview: true })),
-        //     executionContextId: 1,
-        //     timestamp: Date.now(),
-        //     stackTrace: {
-        //       // error, warn processing call stack
-        //       callFrames: ['error', 'warn'].includes(key) ? Console.getCallFrames() : [],
-        //     }
-        //   }
-        // };
-        // this.socketSend('console', data);
       };
     })
   }

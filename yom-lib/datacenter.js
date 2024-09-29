@@ -3,21 +3,44 @@ import version from './v.json'
 import { makeString2NumberChar } from './common/utils'
 import { config, LogLevel } from './config'
 
+const ConsleTableName = 'consoles'
+const NetworkTableName = 'networks'
+const DBVersion = 2
+
+/**
+ * 添加一条console
+ * @param {*} type 
+ * @param {*} timestamp 
+ * @param {*} data 
+ * @returns 
+ */
 export function addConsole(type, timestamp, data) {
   if (config.logLevel === LogLevel.None) return;
   dbAddConsole({ timestamp, type, data });
 }
+/**
+ * 获取时间段内的的console
+ * @returns
+ */
 export async function getConsole(startTime, endTime) {
   return await dbGetConsole(startTime, endTime);
 }
 
-
+/**
+ * 添加一条network
+ * @param {*} data 
+ * @returns 
+ */
 export function addNetwork(data) {
-  if (config.networkEnable !== '1') return;
+  if (config.yomNetworkEnable !== '1') return;
   // network 的时间戳是秒级别的，所以这里 *1000 转为毫秒
   const timestamp = data.params.timestamp * 1000 || Date.now();
   dbAddNetwork({ timestamp, data });
 }
+/**
+ * 获取时间段内的的network
+ * @returns
+ */
 export async function getNetworks(startTime, endTime) {
   return await dbGetNetwork(startTime, endTime);
 }
@@ -37,11 +60,11 @@ function clearDataByTime(_hours) {
     // 获取 hours 小时之前的时间戳
     let hoursAgo = Date.now() - hours * 60 * 60 * 1000;
 
-    db.consoles.where('timestamp').below(hoursAgo).delete()
+    db[ConsleTableName].where('timestamp').below(hoursAgo).delete()
       .then((res) => console.log(`Consoles older than ${hours} hours have been deleted.`, res))
       .catch(error => console.error('Failed to delete Consoles:', error));
 
-    db.networks.where('timestamp').below(hoursAgo).delete()
+    db[NetworkTableName].where('timestamp').below(hoursAgo).delete()
       .then((res) => console.log(`Networks older than ${hours} hours have been deleted.`, res))
       .catch(error => console.error('Failed to delete Networks:', error));
   } catch (error) {
@@ -51,16 +74,16 @@ function clearDataByTime(_hours) {
 
 function clearDataByLines() {
   try {
-    db.consoles.count().then(count => {
+    db[ConsleTableName].count().then(count => {
       if (count > 10) {
-        db.consoles.limit(count - 10).delete()
+        db[ConsleTableName].limit(count - 10).delete()
           .then((res) => console.log(`Networks less ${count}`, res))
           .catch(error => console.error('Failed to delete Networks:', error));
       }
     });
-    db.networks.count().then(count => {
+    db[NetworkTableName].count().then(count => {
       if (count > 10) {
-        db.networks.limit(count - 10).delete()
+        db[NetworkTableName].limit(count - 10).delete()
           .then((res) => console.log(`Networks less ${count}`, res))
           .catch(error => console.error('Failed to delete Networks:', error));
       }
@@ -85,36 +108,65 @@ export function startClearInterval() {
 
 
 //#region 控制台日志
+let consoleCount = 0;
 function dbAddConsole(data) {
-  return db.consoles.put(data);
+  consoleCount++;
+  if(consoleCount % 100 === 0) {
+    console.dir('[Console] Reduce the write frequency !!!, queue count:' + consoleCount);
+    const alarmData = {
+      type: 'alarm',
+      timestamp: Date.now(),
+      data: {
+        title: 'Console',
+        content: `Reduce the write frequency!!!, queue count:${consoleCount}`,
+      }
+    }
+    db[ConsleTableName].put(alarmData)
+  }
+  return db[ConsleTableName].put(data).then(res => {
+    consoleCount--;
+  });
 }
 async function dbGetConsole(beginTime, endTime) {
   console.log('dbGetConsole', new Date(beginTime).getTime(), new Date(endTime).getTime());
-  return await db.consoles.where('timestamp').between(new Date(beginTime).getTime(), new Date(endTime).getTime()).toArray();
+  return await db[ConsleTableName].where('timestamp').between(new Date(beginTime).getTime(), new Date(endTime).getTime()).toArray();
 }
 /**
  * 获取数据库中控制台相关数据的数量
  * @returns
  */
 export async function getConsoleCount() {
-  return await db.consoles.count();
+  return await db[ConsleTableName].count();
+}
+export async function dbBulkAddConsole(data) {
+  return await db[ConsleTableName].bulkPut(data)
 }
 //#endregion
 
 //#region 网络
+let networkCount = 0;
 function dbAddNetwork(data) {
-  return db.networks.put(data);
+  networkCount++;
+  if(networkCount % 100 === 0) {
+    console.dir('[Network] Reduce the write frequency !!!, queue count:' + networkCount);
+  }
+  return db[NetworkTableName].put(data).then(res => {
+    networkCount--;
+  });;
+}
+export async function dbBulkAddNetwork(data) {
+  return await db[NetworkTableName].bulkPut(data)
 }
 async function dbGetNetwork(beginTime, endTime) {
   console.log('dbGetNetwork', new Date(beginTime).getTime(), new Date(endTime).getTime())
-  return await db.networks.where('timestamp').between(new Date(beginTime).getTime(), new Date(endTime).getTime()).toArray();
+  return await db[NetworkTableName].where('timestamp').between(new Date(beginTime).getTime(), new Date(endTime).getTime()).toArray();
 }
 /**
  * 获取数据库中网络请求相关数据的数量
  * @returns
  */
 export async function getNetworkCount() {
-  return await db.networks.count();
+  return await db[NetworkTableName].count();
 }
 //#endregion
 
@@ -187,9 +239,9 @@ export async function downloadData(data, type) {
 const key = getDBKey();
 const db = new Dexie('devtools' + key);
 // 定义表
-db.version(1).stores({
-  consoles: '++id,timestamp,type,data',
-  networks: '++id,timestamp,data'
+db.version(DBVersion).stores({
+  [ConsleTableName]: '++id,timestamp,type,data',
+  [NetworkTableName]: '++id,timestamp,data'
 });
 startClearInterval();
 
