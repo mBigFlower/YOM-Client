@@ -8,8 +8,8 @@
         <a-descriptions :data="basicInfo" :column="1" />
       </a-collapse-item>
       <a-collapse-item header="Response Body" key="2">
-        <JsonViewer :preview-mode="true" :value="responseBody" :show-double-quotes="true" :show-array-index="false"
-          :copyable="true">
+        <JsonViewer v-if="bodyRefreshFlag" :value="responseBody" :show-double-quotes="true" :show-array-index="false"
+          :copyable="true" :preview-mode="true">
         </JsonViewer>
       </a-collapse-item>
       <a-collapse-item header="Request Param" key="3">
@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { toRaw, computed } from 'vue'
+import { computed, watch, ref, nextTick } from 'vue'
 import JsonViewer from '@/components/json-viewer.vue'
 import { timestamp2dateTimeMs } from '@/utils/date-utils';
 import { TYPE_NOT_JSON } from '@/utils/network-utils';
@@ -107,6 +107,18 @@ const responseBody = computed(() => {
     return undefined
   }
 })
+/** body 是否显示，以此控制body强制刷新，
+ * 解决 vue-json-viewer 库加载大数据后，切换数据时显示不更新的问题
+ */
+const bodyRefreshFlag = ref(true);
+watch(
+  () => props.data?.responseBody,
+  async () => {
+    bodyRefreshFlag.value = false;
+    await nextTick();
+    bodyRefreshFlag.value = true;
+  },
+);
 
 function onCloseClicked() {
   emit('update:visible', false);
