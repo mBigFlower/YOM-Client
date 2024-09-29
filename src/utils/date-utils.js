@@ -63,7 +63,6 @@ export function calcTimeFromRangePercent(startTime, endTime, percent) {
  */
 export function formatDuration(timestamp1, timestamp2) {
   const duration = timestamp2 - timestamp1;
-  console.log('6666', duration)
   if(duration < 1) return (duration * 1000).toFixed(0) + ' ms';
   else return duration.toFixed(2) + ' s';
 }

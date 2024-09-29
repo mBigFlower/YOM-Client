@@ -195,7 +195,6 @@ const getRowClass = (record) => {
   const rowClasses = [];
   if (record.key === detailData.value?.key) rowClasses.push('highlight-row')
   if (record.basicInfo?.status !== 200) rowClasses.push('error-row')
-  console.log('record', record)
   return rowClasses
 };
 
