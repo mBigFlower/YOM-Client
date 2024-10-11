@@ -54,7 +54,6 @@ function getBasicInfo(data) {
     basicInfo.status = data[2].response?.status;
     basicInfo.statusText = data[2].response?.statusText;
   }
-  console.log('6', data)
   if(data.length > 3) {
     basicInfo.duration = formatDuration(data[0].timestamp, data[3].timestamp);
   }

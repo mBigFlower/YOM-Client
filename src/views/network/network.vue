@@ -26,9 +26,6 @@
           <template #type="{ record }">
             <span>{{ record.basicInfo.type }}</span>
           </template>
-          <template #duration="{ record }">
-            <span>{{ record.basicInfo.duration }}</span>
-          </template>
           <template #timestamp="{ record }">
             <span>{{ timestamp2dateTimeMs(record.basicInfo.timestamp) }}</span>
           </template>
@@ -96,10 +93,16 @@ const columns = [
   {
     title: 'Send Time',
     slotName: 'timestamp',
+    sortable: {
+      sortDirections: ['ascend', 'descend']
+    },
   },
   {
     title: 'Duration',
-    slotName: 'duration',
+    dataIndex: 'basicInfo.duration',
+    sortable: {
+      sortDirections: ['ascend', 'descend']
+    },
   },
 ];
 
