@@ -158,7 +158,7 @@ function checkTimeMatch(startTimestamp, endTimestamp, timeStamp) {
   return timeStamp >= startTimestamp && timeStamp <= endTimestamp;
 }
 function checkResponseBody(type, responseBody) {
-  if (!responseBody) return true;
+  if (!filterParams.responseBodyText) return true;
   if (TYPE_NOT_JSON.includes(type)) return false
   return responseBody?.includes(filterParams.responseBodyText);
 }
