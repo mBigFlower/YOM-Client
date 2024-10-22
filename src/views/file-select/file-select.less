@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 80%;
+  flex: 2;
   height: 100%;
 
   .upload-part {
@@ -17,6 +17,7 @@
     margin: 20px;
     border-bottom: 2px solid #eee;
   }
+
   .upload-media {
     flex: 01;
     margin: 20px;
@@ -26,8 +27,8 @@
   .analyze-part {
     margin: 20px;
     align-self: end;
-    margin-right:  20px 60px 60px 0;
-    display: flex ;
+    margin-right: 20px 60px 60px 0;
+    display: flex;
     align-items: center;
 
     .time-zone-input {
@@ -43,17 +44,41 @@
   }
 }
 
-
-.file-select-info-wrap {
+.file-mid-notice {
+  height: 85%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
 
-  .file-select-info {
-    flex: 1;
-    margin: 20px;
+.file-upload-drag {
+  margin-top: 20px;
+  padding: 10px 10px 25px 10px;
+  border: solid;
+  height: 80%;
+  flex: 1;
+
+  .drag-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-fill-2);
+    color: var(--color-text-1);
+    border: 1px dashed var(--color-fill-4);
+    height: 100%;
+    border-radius: 2;
+    padding: 6px;
+    font-size: 18px;
   }
 }
 
 :deep(.arco-upload-progress) {
   display: none;
+}
+
+:deep(.arco-upload-draggable) {
+  height: 50%;
 }

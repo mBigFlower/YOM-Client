@@ -34,17 +34,28 @@
         </a-upload>
       </div>
       <div class="analyze-part">
-        <span>Time Zone:</span>
+        <span>Time Zone: </span>
         <a-input-number class="time-zone-input" v-model="timeOffset" :step="1" :precision="0" :min="-12" :max="12"
           height="30px" />
         <a-button id="startBtn" type="primary" @click="onAnalyzeClicked">Start</a-button>
       </div>
     </a-spin>
-    <div class="file-select-info-wrap" v-if="false">
-      <a-descriptions class="file-select-info" :data="consoleInfo" :size="size" title="Console Info" :column="1" />
-      <a-descriptions class="file-select-info" :data="networkInfo" :size="size" title="Network Info" :column="1" />
-      <a-descriptions class="file-select-info" :data="mediaInfo" :size="size" title="Media Info" :column="1" />
-      <div class="file-select-info"></div>
+    <div class="file-mid-notice">
+      <h1>⬅ Select or Drag ➡</h1>
+    </div>
+    <div class="file-upload-drag">
+      <a-upload draggable multiple action="/" accept=".json" :auto-upload="false" @before-upload="beforeDragUpload"
+        @change="onDragFileChange" :custom-icon="getCustomIcon()" @before-remove="onBeforeRemove">
+        <template #upload-button>
+          <div class="drag-area">
+            <span style="color: blue;font-weight:bold">Drag the console or network files here</span>
+            <br>
+            <span>file's name should be started with</span>
+            <br>
+            <span>'console-' or 'network-'</span>
+          </div>
+        </template>
+      </a-upload>
     </div>
   </div>
 </template>
@@ -77,6 +88,34 @@ nextTick(() => {
 });
 //#endregion
 
+//#region Drag 上传
+const beforeDragUpload = async (file) => {
+  try {
+    console.log('beforeDragUpload', file);
+    if (file.name.startsWith('console-'))
+      return beforeLogUpload(file);
+    else if (file.name.startsWith('network-'))
+      return beforeNetworkUpload(file);
+    else {
+      Message.error('unknow file:' + file?.name)
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+const onBeforeRemove = (e) => {
+  return new Promise((resolve, reject) => {
+    const { file } = e
+    console.log('onBeforeRemove', file);
+    consoleStore.removeOriginConsoleFile(file);
+    networkStore.removeNetworkFile(file);
+    resolve(true)
+  });
+}
+//#endregion
+
 //#region Console 日志
 const beforeLogUpload = async (file) => {
   try {
@@ -98,7 +137,6 @@ const getCustomIcon = () => {
   return {
     fileName: (file) => {
       const sizeStr = formatFileSize(file?.file?.size)
-      console.log('file', file, sizeStr);
       return `[${sizeStr}] ${file.name}`
     },
   };
@@ -154,7 +192,7 @@ const timeOffset = ref(Number(localStorage.getItem('timeOffset')) || -3)
  * 开始分析数据
  */
 function onAnalyzeClicked() {
-  console.log('onAnalyzeClicked', consoleStore.originConsoleFiles);
+  console.log('onAnalyzeClicked', consoleStore.originConsoleFiles, networkStore.originNetworkFiles);
   setTimeOffset(timeOffset.value)
   consoleStore.build()
   networkStore.build()
@@ -166,32 +204,6 @@ function onAnalyzeClicked() {
   if (mediaSrc.value?.length > 0)
     return router.push("/media")
 }
-//#region 数据信息显示
-const consoleInfo = ref([{
-  label: 'Start Time',
-  value: '',
-}, {
-  label: 'End Time',
-  value: '',
-}]);
-const networkInfo = ref([{
-  label: 'Start Time',
-  value: '',
-}, {
-  label: 'End Time',
-  value: '',
-}]);
-const mediaInfo = ref([{
-  label: 'Start Time',
-  value: '',
-}, {
-  label: 'End Time',
-  value: '',
-}, {
-  label: 'Duration',
-  value: '',
-}]);
-//#endregion
 </script>
 <style scoped lang="less">
 @import url('./file-select.less');
