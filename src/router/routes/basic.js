@@ -3,6 +3,7 @@ import Network from '@/views/network/network.vue'
 import Media from '@/views/media/media.vue'
 import FileSelect from '@/views/file-select/file-select.vue'
 import AllInOne from '@/views/all-in-one/all-in-one.vue'
+import LibTest from '@/views/lib-test/lib-test.vue'
 
 const BASIC = [{
   path: '/',
@@ -41,6 +42,13 @@ const BASIC = [{
   component: AllInOne,
   meta: {
     order: 5
+  }
+}, {
+  path: '/lib-test',
+  name: 'lib-test',
+  component: LibTest,
+  meta: {
+    order: 6
   }
 }]
 
