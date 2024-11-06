@@ -1,6 +1,8 @@
 
 export async function readFile2Object(file) {
   return new Promise((resolve, reject) => {
+    // 如果是 string类型的数据，直接解析返回
+    if (typeof file === 'string') return resolve(JSON.parse(file))
     const reader = new FileReader();
     reader.onload = (e) => {
       try {

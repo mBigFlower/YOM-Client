@@ -44,8 +44,8 @@
       <h1>⬅ Select or Drag ➡</h1>
     </div>
     <div class="file-upload-drag">
-      <a-upload draggable multiple action="/" accept=".json" :auto-upload="false" @before-upload="beforeDragUpload"
-        @change="onDragFileChange" :custom-icon="getCustomIcon()" @before-remove="onBeforeRemove">
+      <a-upload draggable multiple action="/" accept=".json,.zip" :auto-upload="false" @before-upload="beforeDragUpload"
+        :custom-icon="getCustomIcon()" @before-remove="onBeforeRemove">
         <template #upload-button>
           <div class="drag-area">
             <span style="color: blue;font-weight:bold">Drag the console or network files here</span>
@@ -53,6 +53,8 @@
             <span>file's name should be started with</span>
             <br>
             <span>'console-' or 'network-'</span>
+            <br><br>
+            <span style="color: red;font-weight:bold">'Zip supported, try it !'</span>
           </div>
         </template>
       </a-upload>
@@ -69,6 +71,8 @@ import { setTimeOffset } from '@/utils/date-utils'
 import { formatFileSize } from '@/utils/file-utils'
 import { useRouter } from "vue-router";
 import { initFileSelectGuide } from '../../utils/guide-utils'
+import JSZip from 'JSZip'
+import { Message } from '@arco-design/web-vue';
 
 const router = useRouter();
 const consoleStore = useConsoleStore();
@@ -96,7 +100,9 @@ const beforeDragUpload = async (file) => {
       return beforeLogUpload(file);
     else if (file.name.startsWith('network-'))
       return beforeNetworkUpload(file);
-    else {
+    else if (file.name.endsWith('.zip')) {
+      return onDragZipFileChange(file);
+    } else {
       Message.error('unknow file:' + file?.name)
       return false;
     }
@@ -114,6 +120,32 @@ const onBeforeRemove = (e) => {
     resolve(true)
   });
 }
+// #region zip分析
+function onDragZipFileChange(file) {
+  JSZip.loadAsync(file)                                   // 1) read the Blob
+    .then(function (zip) {
+      analyzeDragedFiles(zip)
+    });
+  return false
+}
+
+async function analyzeDragedFiles(zip) {
+  let result = 0;
+  for (const filename of Object.keys(zip.files)) {
+    if (filename.includes('console-')) {
+      const fileStr = await zip.file(filename).async('string');
+      beforeLogUpload(fileStr);
+      result++;
+    } else if (filename.includes('network-')) {
+      const fileStr = await zip.file(filename).async('string');
+      beforeNetworkUpload(fileStr);
+      result++;
+    }
+  }
+  if (result > 0) onAnalyzeClicked();
+  else Message.error('No console or network files')
+}
+// #endregion
 //#endregion
 
 //#region Console 日志
