@@ -23,7 +23,7 @@ export const config = {
 
 export function setConfig(_config) {
   if (_config.logLevel !== undefined) {
-    if (+logLevel === NaN || +logLevel < 0 || +logLevel > 4)
+    if (+_config.logLevel === NaN || +_config.logLevel < 0 || +_config.logLevel > 4)
       return console.error('Invalid log level');;
     config.logLevel = _config.logLevel;
     localStorage.setItem('yom-log-level', config.logLevel);
