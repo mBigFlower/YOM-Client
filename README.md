@@ -17,7 +17,9 @@ A log reviewer system.
 
 ## Description
 
-- **yom-lib** store the logs(console and network) to IndexDB
+Resolve an issue that browser app could not be localized.
+
+- **yom-lib** store the logs(console and network) to IndexDB; export the logs to local file
 - **src** logs viewer
 
 ### yom-lib
