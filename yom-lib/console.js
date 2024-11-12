@@ -3,6 +3,7 @@ import { Event } from './common/protocol';
 import { addConsole, getConsole } from './datacenter';
 import { callsites } from './common/utils'
 import { config } from './config'
+import { isSelf } from './common/utils'
 
 export default class Console {
   namespace = 'Console';
@@ -28,8 +29,10 @@ export default class Console {
 
   constructor() {
     if (config.yomConsoleEnable !== "1") return;
-    this.hookConsole();
     this.listenError();
+
+    if (isSelf()) this.hookShareWorkerConsole();
+    else this.hookConsole();
   }
 
   /**
@@ -167,11 +170,16 @@ export default class Console {
         addConsole(methods[key], Date.now(), args);
       };
     });
-    this.hookShareWorkerConsole(methods);
   }
 
-  hookShareWorkerConsole(methods) {
-    if (!self || window) return;
+  hookShareWorkerConsole() {
+    const methods = {
+      log: 'log',
+      warn: 'warning',
+      info: 'info',
+      error: 'error',
+      debug: 'debug',
+    };
     Object.keys(methods).forEach((key) => {
       const nativeConsoleFunc = self.console[key];
       self.console[key] = (...args) => {
@@ -206,9 +214,13 @@ export default class Console {
       };
       this.socketSend('error', data);
     };
-
-    window.addEventListener('error', e => exceptionThrown(e.error));
-    window.addEventListener('unhandledrejection', e => exceptionThrown(e.reason));
+    if (isSelf()) {
+      self.addEventListener('error', e => exceptionThrown(e.error));
+      self.addEventListener('unhandledrejection', e => exceptionThrown(e.reason));
+    } else {
+      window.addEventListener('error', e => exceptionThrown(e.error));
+      window.addEventListener('unhandledrejection', e => exceptionThrown(e.reason));
+    }
   }
 
   /**

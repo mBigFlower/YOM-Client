@@ -8,16 +8,18 @@ import './record/EBML-vite.umd.js'
 import Network from './network';
 import Console from './console';
 import * as config from './config';
+import { isSelf } from './common/utils.js'
 
 /**
  * 快捷键唤醒日志导出面板
  * Ctrl + Alt + 6
  */
-window.addEventListener('keydown', function (event) {
-  if (event.ctrlKey && event.altKey && event.key === '6') {
-    addOverlay();
-  }
-});
+if (!isSelf())
+  window.addEventListener('keydown', function (event) {
+    if (event.ctrlKey && event.altKey && event.key === '6') {
+      addOverlay();
+    }
+  });
 /**
  * 初始化，重写 console 和 network
  */

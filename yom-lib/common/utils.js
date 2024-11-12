@@ -66,3 +66,25 @@ export function callsites() {
 		Error.prepareStackTrace = _prepareStackTrace;
 	}
 }
+
+export function isSelf(){
+  try {
+    if(self.length === 0) return false;
+    else return true;
+    // // eslint-disable-next-line no-unused-expressions
+    // window
+    // return false
+  } catch (err) {
+    return true
+  }
+}
+
+export function localStorageGetItem(key) {
+  if (isSelf()) return;
+  return localStorage.getItem(key) || '';
+}
+
+export function localStorageSetItem(key, value) {
+  if (isSelf()) return;
+  return localStorage.setItem(key, value);
+}

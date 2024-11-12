@@ -3,6 +3,7 @@ import { getAbsoultPath, key2UpperCase } from './common/utils';
 import { Event } from './common/protocol';
 import { addNetwork, getNetworks } from './datacenter';
 import uuid from 'string-random';
+import { isSelf } from './common/utils.js'
 
 const getTimestamp = () => Date.now() / 1000;
 
@@ -25,7 +26,8 @@ export default class Network {
 
   constructor() {
     this.hookXhr();
-    this.hookFetch();
+    if (isSelf()) this.hookShareWorkerFetch();
+    else this.hookFetch();
   }
 
   /**
@@ -220,6 +222,105 @@ export default class Network {
     const originFetch = window.fetch;
 
     window.fetch = function (request, initConfig = {}) {
+      let url;
+      let method;
+      let data = '';
+      // When request is a string, it is the requested url
+      if (typeof request === 'string') {
+        url = request;
+        method = initConfig.method || 'get';
+        data = initConfig.body;
+      } else {
+        // Otherwise it is a Request object
+        ({ url, method } = request);
+      }
+
+      url = getAbsoultPath(url);
+      const requestId = instance.getRequestId();
+      const sendRequest = {
+        url,
+        method,
+        requestId,
+        headers: Network.getDefaultHeaders(),
+      };
+
+      if (method.toLowerCase() === 'post') {
+        sendRequest.postData = data;
+        sendRequest.hasPostData = !!data;
+      }
+
+      instance.socketSend({
+        method: Event.requestWillBeSent,
+        params: {
+          requestId,
+          documentURL: location.href,
+          timestamp: getTimestamp(),
+          wallTime: Date.now(),
+          type: 'Fetch',
+          request: sendRequest,
+        }
+      });
+
+      let oriResponse;
+      return originFetch(request, initConfig).then((response) => {
+        // Temporarily save the raw response to the request
+        oriResponse = response;
+
+        const { headers, status, statusText } = response;
+        const responseHeaders = {};
+        let headersText = '';
+        headers.forEach((val, key) => {
+          key = key2UpperCase(key);
+          responseHeaders[key] = val;
+          headersText += `${key}: ${val}\r\n`;
+        });
+
+        instance.sendNetworkEvent({
+          url,
+          requestId,
+          status,
+          statusText,
+          headersText,
+          type: 'Fetch',
+          blockedCookies: [],
+          headers: responseHeaders,
+          encodedDataLength: Number(headers.get('Content-Length')),
+        });
+
+        const contentType = headers.get('Content-Type');
+        if (['application/json', 'application/javascript', 'text/plain', 'text/html', 'text/css'].some(type => contentType.includes(type))) {
+          return response.clone().text();
+        }
+        return '';
+      })
+        .then((responseBody) => {
+          // instance.responseText.set(requestId, responseBody);
+          addNetwork({
+            method: Event.responseBody,
+            params: {
+              requestId,
+              body: responseBody,
+            }
+          });
+          // Returns the raw response to the request
+          return oriResponse;
+        })
+        .catch((error) => {
+          instance.sendNetworkEvent({
+            url,
+            requestId,
+            blockedCookies: [],
+            type: 'Fetch',
+          });
+          throw error;
+        });
+    };
+  }
+  hookShareWorkerFetch() {
+    const instance = this;
+    const originFetch = self.fetch;
+
+    self.fetch = function (request, initConfig = {}) {
       let url;
       let method;
       let data = '';
