@@ -36,6 +36,7 @@
     <a-space>
       <a-button type="primary" @click="onStartClick">Start</a-button>
       <a-button @click="onStopClick">Stop</a-button>
+      <a-button @click="startWorker">Start Test Worker</a-button>
     </a-space>
   </div>
 </template>
@@ -44,6 +45,9 @@
 import { ref, computed, reactive } from 'vue'
 import { Message } from '@arco-design/web-vue';
 import Dexie from 'dexie'
+// import yom from '../../../yom-lib/dist/yom-200a2248.js'
+// console.log('6666');
+// console.log('self yom', yom);
 
 console.log('yom', window.yom)
 
@@ -170,10 +174,10 @@ const openRequest = indexedDB.open("devtoolsLibTest", 11);
 openRequest.onupgradeneeded = function (event) {
   console.log('onupgradeneeded', event);
   db = event.target.result; // 将db赋值为全局变量
-  
+
   if (!db.objectStoreNames.contains("consoles")) {
     let store = db.createObjectStore("consoles", {
-      keyPath: "id", autoIncrement: true 
+      keyPath: "id", autoIncrement: true
     });
     store.createIndex('timestamp', 'timestamp', { unique: false }); // 表示可以重复
     store.createIndex('type', 'type', { unique: false }); // 表示可以重复
@@ -208,16 +212,27 @@ function addData(data) {
 //#endregion
 
 
-// import MyWorker from './worker.js?worker'
-// console.log('yom', yom);
 // function startWorker() {
 //   console.log('worker start');
-//   const worker = new MyWorker();
-//   worker.onmessage = (event) => {
+//   const worker = new SharedWorker('./sharedworker.js');
+//   worker.port.onmessage = (event) => {
 //     console.log('worker.onmessage', event.data);
 //   };
-//   worker.postMessage("start")
+//   worker.port.start();
+//   worker.port.postMessage({number : 10000})
 // }
+
+async function startWorker() {
+  const worker = new SharedWorker(new URL('./sharedworker', import.meta.url), {
+      type: 'module',
+    });
+  worker.port.onmessage = function (event) {
+    console.log('Main thread received:', event.data);
+  };
+
+  worker.port.start(); // 开始通信
+  worker.port.postMessage('Hello from Main Thread!'); // 发送消息给 SharedWorker
+}
 
 </script>
 <style scoped lang="less">
