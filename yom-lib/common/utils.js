@@ -5,9 +5,20 @@
  */
 export function getAbsoultPath(url) {
   if (!url || typeof url !== 'string') return '';
+  // 兼容 worker 场景
+  if(isSelf()) return getAbsolutePathInWorker(url);
   const a = document.createElement('a');
   a.href = url;
   return a.href;
+}
+function getAbsolutePathInWorker(url) {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.href;
+  } catch (e) {
+    console.error('Error parsing URL:', e);
+    return '';
+  }
 }
 
 export function key2UpperCase(key) {
@@ -51,25 +62,25 @@ export function makeString2NumberChar(input) {
 }
 
 export function callsites() {
-	const _prepareStackTrace = Error.prepareStackTrace;
-	try {
-		let result = [];
-		Error.prepareStackTrace = (_, callSites) => {
-			const callSitesWithoutCurrent = callSites.slice(1);
-			result = callSitesWithoutCurrent;
-			return callSitesWithoutCurrent;
-		};
+  const _prepareStackTrace = Error.prepareStackTrace;
+  try {
+    let result = [];
+    Error.prepareStackTrace = (_, callSites) => {
+      const callSitesWithoutCurrent = callSites.slice(1);
+      result = callSitesWithoutCurrent;
+      return callSitesWithoutCurrent;
+    };
 
-		new Error().stack; // eslint-disable-line unicorn/error-message, no-unused-expressions
-		return result;
-	} finally {
-		Error.prepareStackTrace = _prepareStackTrace;
-	}
+    new Error().stack; // eslint-disable-line unicorn/error-message, no-unused-expressions
+    return result;
+  } finally {
+    Error.prepareStackTrace = _prepareStackTrace;
+  }
 }
 
-export function isSelf(){
+export function isSelf() {
   try {
-    if(self.length === 0) return false;
+    if (self.length === 0) return false;
     else return true;
     // // eslint-disable-next-line no-unused-expressions
     // window

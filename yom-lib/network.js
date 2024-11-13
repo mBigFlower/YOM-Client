@@ -53,6 +53,7 @@ export default class Network {
     const headers = {
       'User-Agent': navigator.userAgent,
     };
+    if (isSelf()) return;
     if (document.cookie) {
       headers.Cookie = document.cookie;
     }
