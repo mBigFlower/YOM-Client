@@ -2,7 +2,7 @@ import { objectFormat, objectRelease, getObjectProperties } from './common/remot
 import { Event } from './common/protocol';
 import { addConsole, getConsole } from './datacenter';
 import { callsites } from './common/utils'
-import { config } from './config'
+import { configParams } from './config'
 import { isSelf } from './common/utils'
 
 export default class Console {
@@ -28,7 +28,7 @@ export default class Console {
   };
 
   constructor() {
-    if (config.yomConsoleEnable !== "1") return;
+    if (configParams.yomConsoleEnable !== "1") return;
     this.listenError();
 
     if (isSelf()) this.hookShareWorkerConsole();
@@ -166,7 +166,7 @@ export default class Console {
     Object.keys(methods).forEach((key) => {
       const nativeConsoleFunc = window.console[key];
       window.console[key] = (...args) => {
-        if (config.chromeConsoleEnable === '1') nativeConsoleFunc(...args);
+        if (configParams.chromeConsoleEnable === '1') nativeConsoleFunc(...args);
         addConsole(methods[key], Date.now(), args);
       };
     });
@@ -183,7 +183,7 @@ export default class Console {
     Object.keys(methods).forEach((key) => {
       const nativeConsoleFunc = self.console[key];
       self.console[key] = (...args) => {
-        if (config.chromeConsoleEnable === '1') nativeConsoleFunc(...args);
+        if (configParams.chromeConsoleEnable === '1') nativeConsoleFunc(...args);
         addConsole(methods[key], Date.now(), args);
       };
     })

@@ -14,81 +14,88 @@ export const LogLevel = {
   None: '-1',
 }
 
-export const config = {
+export const configParams = {
   logLevel: LogLevel.Debug,
   logRorate: DEFAULT_LOG_RORATE,
   yomNetworkEnable: '1',
   yomConsoleEnable: '1',
   chromeConsoleEnable: '1',
+  workerBaseUrl: '',
 }
 
 export function setConfig(_config) {
   if (_config.logLevel !== undefined) {
     if (+_config.logLevel === NaN || +_config.logLevel < 0 || +_config.logLevel > 4)
       return console.error('Invalid log level');;
-    config.logLevel = _config.logLevel;
-    localStorageSetItem('yom-log-level', config.logLevel);
+    configParams.logLevel = _config.logLevel;
+    localStorageSetItem('yom-log-level', configParams.logLevel);
   }
   if (_config.logRorate !== undefined) {
-    config.logRorate = _config.logRorate;
-    localStorageSetItem('yom-log-rotate', config.logRorate);
+    configParams.logRorate = _config.logRorate;
+    localStorageSetItem('yom-log-rotate', configParams.logRorate);
   }
   if (_config.yomNetworkEnable !== undefined) {
-    config.yomNetworkEnable = _config.yomNetworkEnable;
-    localStorageSetItem('yom-network-enable', config.yomNetworkEnable);
+    configParams.yomNetworkEnable = _config.yomNetworkEnable;
+    localStorageSetItem('yom-network-enable', configParams.yomNetworkEnable);
   }
   if (_config.yomConsoleEnable !== undefined) {
-    config.yomConsoleEnable = _config.yomConsoleEnable
-    localStorageSetItem('yom-console-enable', config.yomConsoleEnable);
+    configParams.yomConsoleEnable = _config.yomConsoleEnable
+    localStorageSetItem('yom-console-enable', configParams.yomConsoleEnable);
   };
   if (_config.chromeConsoleEnable !== undefined) {
-    config.chromeConsoleEnable = _config.chromeConsoleEnable;
-    localStorageSetItem('chrome-console-enable', config.chromeConsoleEnable);
+    configParams.chromeConsoleEnable = _config.chromeConsoleEnable;
+    localStorageSetItem('chrome-console-enable', configParams.chromeConsoleEnable);
   }
-  return config;
+  if (_config.workerBaseUrl !== undefined) {
+    configParams.workerBaseUrl = _config.workerBaseUrl;
+    localStorageSetItem('worker-base-url', configParams.workerBaseUrl);
+  }
+  return configParams;
 }
 
 export function setConfigLogLevel(logLevel) {
   if (+logLevel === NaN || +logLevel < 0 || +logLevel > 4)
     throw new Error('Invalid log level');;
-  config.logLevel = logLevel;
+  configParams.logLevel = logLevel;
   localStorageSetItem('yom-log-level', logLevel);
   return true;
 }
 
 export function setConfigLogRorate(logRorate) {
-  config.logRorate = logRorate;
+  configParams.logRorate = logRorate;
   localStorageSetItem('yom-log-rotate', logRorate);
   return true;
 }
 
 export function setYomNetworkEnable(isEnable) {
-  config.yomNetworkEnable = isEnable;
+  configParams.yomNetworkEnable = isEnable;
   localStorageSetItem('yom-network-enable', isEnable);
   return true;
 }
 export function setYomConsoleEnable(isEnable) {
-  config.yomConsoleEnable = isEnable;
+  configParams.yomConsoleEnable = isEnable;
   localStorageSetItem('yom-console-enable', isEnable);
   return true;
 }
 export function setChromeConsoleEnable(isEnable) {
-  config.chromeConsoleEnable = isEnable;
+  configParams.chromeConsoleEnable = isEnable;
   localStorageSetItem('chrome-console-enable', isEnable);
   return true;
 }
 
 function initConfig() {
-  config.logLevel = localStorageGetItem('yom-log-level') || LogLevel.Debug;
-  config.logRorate = localStorageGetItem('yom-log-rotate') || DEFAULT_LOG_RORATE;
-  config.yomNetworkEnable = localStorageGetItem('yom-network-enable') || '1';
-  config.yomConsoleEnable = localStorageGetItem('yom-console-enable') || '1';
-  config.chromeConsoleEnable = localStorageGetItem('chrome-console-enable') || '1';
-  console.log('yom initConfig logLevel', config.logLevel)
-  console.log('yom initConfig logRorate', config.logRorate, 'h')
-  console.log('yom initConfig yomNetworkEnable', config.yomNetworkEnable)
-  console.log('yom initConfig yomConsoleEnable', config.yomConsoleEnable)
-  console.log('yom initConfig chromeConsoleEnable', config.chromeConsoleEnable)
+  configParams.logLevel = localStorageGetItem('yom-log-level') || LogLevel.Debug;
+  configParams.logRorate = localStorageGetItem('yom-log-rotate') || DEFAULT_LOG_RORATE;
+  configParams.yomNetworkEnable = localStorageGetItem('yom-network-enable') || '1';
+  configParams.yomConsoleEnable = localStorageGetItem('yom-console-enable') || '1';
+  configParams.chromeConsoleEnable = localStorageGetItem('chrome-console-enable') || '1';
+  configParams.workerBaseUrl = localStorageGetItem('worker-base-url') || '';
+  console.log('yom initConfig logLevel', configParams.logLevel)
+  console.log('yom initConfig logRorate', configParams.logRorate, 'h')
+  console.log('yom initConfig yomNetworkEnable', configParams.yomNetworkEnable)
+  console.log('yom initConfig yomConsoleEnable', configParams.yomConsoleEnable)
+  console.log('yom initConfig chromeConsoleEnable', configParams.chromeConsoleEnable)
+  console.log('yom initConfig workerBaseUrl', configParams.workerBaseUrl)
 }
 
 initConfig();

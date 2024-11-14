@@ -1,7 +1,7 @@
 import Dexie from 'dexie';
 import version from './v.json'
 import { makeString2NumberChar } from './common/utils'
-import { config, LogLevel } from './config'
+import { configParams, LogLevel } from './config'
 
 const ConsleTableName = 'consoles'
 const NetworkTableName = 'networks'
@@ -15,7 +15,7 @@ const DBVersion = 2
  * @returns 
  */
 export function addConsole(type, timestamp, data) {
-  if (config.logLevel === LogLevel.None) return;
+  if (configParams.logLevel === LogLevel.None) return;
   dbAddConsole({ timestamp, type, data });
 }
 /**
@@ -32,7 +32,7 @@ export async function getConsole(startTime, endTime) {
  * @returns 
  */
 export function addNetwork(data) {
-  if (config.yomNetworkEnable !== '1') return;
+  if (configParams.yomNetworkEnable !== '1') return;
   // network 的时间戳是秒级别的，所以这里 *1000 转为毫秒
   const timestamp = data.params.timestamp * 1000 || Date.now();
   dbAddNetwork({ timestamp, data });
@@ -55,7 +55,7 @@ export function clearDataRegularly(_hours) {
 
 function clearDataByTime(_hours) {
   try {
-    const hours = _hours || config.logRorate;
+    const hours = _hours || configParams.logRorate;
     console.info('clearDataRegularly', hours)
     // 获取 hours 小时之前的时间戳
     let hoursAgo = Date.now() - hours * 60 * 60 * 1000;
@@ -111,20 +111,33 @@ export function startClearInterval() {
 let consoleCount = 0;
 function dbAddConsole(data) {
   consoleCount++;
-  if(consoleCount % 100 === 0) {
-    console.dir('[Console] Reduce the write frequency !!!, queue count:' + consoleCount);
-    const alarmData = {
-      type: 'alarm',
-      timestamp: Date.now(),
-      data: {
-        title: 'Console',
-        content: `Reduce the write frequency!!!, queue count:${consoleCount}`,
-      }
-    }
-    db[ConsleTableName].put(alarmData)
-  }
+  // 测试不够，先不发布此处
+  // if (consoleCount > 0 && consoleCount % 100 === 0) {
+  //   console.dir('[Console] write too fast !!!, queue count:' + consoleCount);
+  //   const alarmData = {
+  //     type: 'alarm',
+  //     timestamp: Date.now(),
+  //     data: {
+  //       title: 'Console',
+  //       content: `Write too fast!!!, queue count:${consoleCount}`,
+  //     }
+  //   }
+  //   db[ConsleTableName].put(alarmData)
+  // }
   return db[ConsleTableName].put(data).then(res => {
     consoleCount--;
+    // if (consoleCount > 0 && consoleCount % 100 === 0) {
+    //   console.dir('[Console] write over, queue count:' + consoleCount);
+    //   const alarmData = {
+    //     type: 'alarm',
+    //     timestamp: Date.now(),
+    //     data: {
+    //       title: 'Console',
+    //       content: `Write over, queue count:${consoleCount}`,
+    //     }
+    //   }
+    //   db[ConsleTableName].put(alarmData)
+    // }
   });
 }
 async function dbGetConsole(beginTime, endTime) {
@@ -147,9 +160,9 @@ export async function dbBulkAddConsole(data) {
 let networkCount = 0;
 function dbAddNetwork(data) {
   networkCount++;
-  if(networkCount % 100 === 0) {
-    console.dir('[Network] Reduce the write frequency !!!, queue count:' + networkCount);
-  }
+  // if (networkCount % 100 === 0) {
+  //   console.dir('[Network] Reduce the write frequency !!!, queue count:' + networkCount);
+  // }
   return db[NetworkTableName].put(data).then(res => {
     networkCount--;
   });;

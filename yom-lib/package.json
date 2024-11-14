@@ -1,0 +1,15 @@
+{
+  "name": "yom",
+  "version": "1.2.2",
+  "description": "[Yesterday Once More] store console and network to indexdb",
+  "main": "dist/yom.mjs",
+  "scripts": {
+    "pub": "node publisher.js"
+  },
+  "keywords": [
+    "yom"
+  ],
+  "author": "chen",
+  "license": "ISC",
+  "private": false
+}

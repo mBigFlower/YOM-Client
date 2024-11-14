@@ -1,3 +1,4 @@
+import { configParams } from '../config.js'
 
 /**
  * get absolute path
@@ -13,11 +14,11 @@ export function getAbsoultPath(url) {
 }
 function getAbsolutePathInWorker(url) {
   try {
-    const urlObj = new URL(url);
+    const urlObj = new URL(url, configParams.workerBaseUrl);
     return urlObj.href;
   } catch (e) {
     console.error('Error parsing URL:', e);
-    return '';
+    return url;
   }
 }
 

@@ -137,16 +137,27 @@ export default class Network {
     const xhrSend = XMLHttpRequest.prototype.send;
     const xhrOpen = XMLHttpRequest.prototype.open;
     const xhrSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
-    XMLHttpRequest.prototype.open = function (...params) {
-      const [method, url] = params;
+
+    // XMLHttpRequest.prototype.open = function (...params) {
+    //   const [method, url] = params;
+    //   this.$$request = {
+    //     method,
+    //     url: getAbsoultPath(url),
+    //     requestId: instance.getRequestId(),
+    //     headers: Network.getDefaultHeaders(),
+    //   };
+    //   if(isSelf()) params[1] = this.$$request.url
+    //   xhrOpen.apply(this, params);
+    // };
+    XMLHttpRequest.prototype.open = function (method, url, ...rest) {
+      const _url = getAbsoultPath(url)
       this.$$request = {
         method,
-        url: getAbsoultPath(url),
+        url: _url,
         requestId: instance.getRequestId(),
         headers: Network.getDefaultHeaders(),
       };
-
-      xhrOpen.apply(this, params);
+      xhrOpen.call(this, method, _url, ...rest);
     };
 
     XMLHttpRequest.prototype.send = function (data) {
