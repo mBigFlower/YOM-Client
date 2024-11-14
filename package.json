@@ -21,7 +21,8 @@
     "uuid": "^9.0.1",
     "vue": "^3.2.45",
     "vue-json-viewer": "3",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "yom": "1.2.1"
   },
   "devDependencies": {
     "@arco-design/web-vue": "^2.42.1",
