@@ -81,8 +81,7 @@ export function callsites() {
 
 export function isSelf() {
   try {
-    if (self.length === 0) return false;
-    else return true;
+    return typeof window === 'undefined' && typeof self !== 'undefined';
     // // eslint-disable-next-line no-unused-expressions
     // window
     // return false

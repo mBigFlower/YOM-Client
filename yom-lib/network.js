@@ -53,7 +53,7 @@ export default class Network {
     const headers = {
       'User-Agent': navigator.userAgent,
     };
-    if (isSelf()) return;
+    if (isSelf()) return headers;
     if (document.cookie) {
       headers.Cookie = document.cookie;
     }
@@ -300,7 +300,7 @@ export default class Network {
         });
 
         const contentType = headers.get('Content-Type');
-        if (['application/json', 'application/javascript', 'text/plain', 'text/html', 'text/css'].some(type => contentType.includes(type))) {
+        if (['application/json', 'application/javascript', 'text/plain', 'text/html', 'text/css'].some(type => contentType?.includes(type))) {
           return response.clone().text();
         }
         return '';
@@ -399,7 +399,7 @@ export default class Network {
         });
 
         const contentType = headers.get('Content-Type');
-        if (['application/json', 'application/javascript', 'text/plain', 'text/html', 'text/css'].some(type => contentType.includes(type))) {
+        if (['application/json', 'application/javascript', 'text/plain', 'text/html', 'text/css'].some(type => contentType?.includes(type))) {
           return response.clone().text();
         }
         return '';
