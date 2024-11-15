@@ -30,7 +30,8 @@ yom.setConfig({
   "logRorate": 3,
   "yomNetworkEnable": "1",
   "yomConsoleEnable": "1",
-  "chromeConsoleEnable": "1"
+  "chromeConsoleEnable": "1",
+  "workerBaseUrl": ""
 })
 ```
 
