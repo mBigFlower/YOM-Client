@@ -1,13 +1,13 @@
 // import yom from 'yom'
 import yom from '../../../yom-lib/dist/yom.mjs'
-import musicResource from '../../../public/Yesterday Once More.mp3'
 console.log('self yom', yom);
 yom.setConfig({
   "logRorate": 3,
   "yomNetworkEnable": "1",
   "yomConsoleEnable": "1",
   "chromeConsoleEnable": "1",
-  "workerBaseUrl": "http://10.110.13.31:5173/public/"
+  "workerBaseUrl": "http://10.110.13.31:5173/public/",
+  'dbName': '',
 });
 console.log('6666');
 self.onconnect = function (event) {
@@ -27,18 +27,14 @@ self.onconnect = function (event) {
 
   setTimeout(() => {
     setXHRRequest()
-    setXHRRequest2()
+    // setXHRRequest2()
   }, 3000);
 };
 
 function setXHRRequest() {
-  var oReq = new XMLHttpRequest();
-  oReq.addEventListener("load", (e) => {
-    console.log('setXHRRequest', e);
-  });
-  oReq.open("GET", "https://10.115.24.110:26000/commandcenter/mrps/pucmaster/sr/mrps/homeVideo/getCallInfo?start_time=1731462249&end_time=1731465745&numbers=103100");
-  // oReq.open("GET", 'Yesterday Once More.mp3')
-  oReq.send();
+  fetch('http://10.110.13.54:30001/health', { method: 'HEAD' }).then(res=>{
+    console.log('res', res);
+  }).catch(err=> console.error('err', err));
 }
 function setXHRRequest2() {
   var oReq = new XMLHttpRequest();

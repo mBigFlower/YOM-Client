@@ -1,6 +1,6 @@
 import Dexie from 'dexie';
 import version from './v.json'
-import { makeString2NumberChar } from './common/utils'
+import { makeString2NumberChar, isSelf } from './common/utils'
 import { configParams, LogLevel } from './config'
 
 const ConsleTableName = 'consoles'
@@ -16,6 +16,7 @@ const DBVersion = 2
  */
 export function addConsole(type, timestamp, data) {
   if (configParams.logLevel === LogLevel.None) return;
+  if (configParams.yomConsoleEnable !== "1") return;
   dbAddConsole({ timestamp, type, data });
 }
 /**
@@ -248,14 +249,29 @@ export async function downloadData(data, type) {
 }
 //#endregion
 
-// 导入 Dexie， 创建一个新的数据库实例
-const key = getDBKey();
-const db = new Dexie('devtools' + key);
-// 定义表
-db.version(DBVersion).stores({
-  [ConsleTableName]: '++id,timestamp,type,data',
-  [NetworkTableName]: '++id,timestamp,data'
-});
+let db;
+let dbKey;
+export function openNewDatabase(newKey) {
+  // 导入 Dexie， 创建一个新的数据库实例
+  const key = newKey || getDBKey();
+  if(key === dbKey) return;
+  closeCurrentDatabase();
+  db = new Dexie('devtools' + key);
+  // 定义表
+  db.version(DBVersion).stores({
+    [ConsleTableName]: '++id,timestamp,type,data',
+    [NetworkTableName]: '++id,timestamp,data'
+  });
+}
+function closeCurrentDatabase() {
+  try {
+    if (db) db.close()
+  } catch (error) {
+    // ??
+  }
+}
+
+openNewDatabase();
 startClearInterval();
 
 /**
@@ -264,9 +280,10 @@ startClearInterval();
  */
 function getDBKey() {
   try {
-    const key = makeString2NumberChar(window.location.pathname);
-    if (window) return key || '';
-    if (self) return key || '';
+    console.log('getDBKey', configParams)
+    if (configParams.dbName) return configParams.dbName;
+    if (isSelf()) return makeString2NumberChar(self.location.pathname) || '';
+    else return makeString2NumberChar(window.location.pathname) || '';
   } catch (err) {
     return '';
   }

@@ -1,6 +1,6 @@
 
 
-import { clearDataRegularly, getConsole, getNetworks, downloadData } from './datacenter';
+import { clearDataRegularly, getConsole, getNetworks, downloadData, openNewDatabase } from './datacenter';
 import { startRecordClick, downloadRecord } from './record/recorderImpl.js';
 import { webrtc } from './record/lib.webrtc.js';
 import { addOverlay } from './export-panel';
@@ -55,6 +55,10 @@ async function downloadFile2Local(data, type) {
   await downloadData(data, type);
 }
 
+// async function openDatabase(key) {
+//   openNewDatabase(key);
+// }
+
 /**
  * 记录屏幕操作
  * 这个函数会使用 WebRTC API 来获取当前屏幕的视频流，并对其进行录制
@@ -90,6 +94,7 @@ export default {
   getConsoleList,
   getNetworkList,
   downloadFile2Local,
+  openNewDatabase,
   recordScreen,
   ...config,
 }

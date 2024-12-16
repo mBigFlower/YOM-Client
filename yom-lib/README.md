@@ -31,7 +31,8 @@ yom.setConfig({
   "yomNetworkEnable": "1",
   "yomConsoleEnable": "1",
   "chromeConsoleEnable": "1",
-  "workerBaseUrl": ""
+  "workerBaseUrl": "",
+  "dbName": "",
 })
 ```
 
@@ -42,4 +43,5 @@ yom.setConfig({
 |yomConsoleEnable|enable store console log; "1":enable, others means disable|"1"|
 |chromeConsoleEnable|enable chrome console log; "1":enable, others means disable|"1"|
 |workerBaseUrl|base url for worker|""|
+|dbName|database name|location.pathname|
 

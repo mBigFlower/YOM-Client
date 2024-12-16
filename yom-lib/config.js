@@ -1,4 +1,5 @@
 import { localStorageGetItem, localStorageSetItem } from './common/utils'
+import { openNewDatabase } from './datacenter';
 /** 默认清理多久前的日志，单位：小时 */
 const DEFAULT_LOG_RORATE = 3;
 export const LogLevel = {
@@ -21,6 +22,7 @@ export const configParams = {
   yomConsoleEnable: '1',
   chromeConsoleEnable: '1',
   workerBaseUrl: '',
+  dbName: '',
 }
 
 export function setConfig(_config) {
@@ -49,6 +51,11 @@ export function setConfig(_config) {
   if (_config.workerBaseUrl !== undefined) {
     configParams.workerBaseUrl = _config.workerBaseUrl;
     localStorageSetItem('worker-base-url', configParams.workerBaseUrl);
+  }
+  if (_config.dbName !== undefined) {
+    configParams.dbName = _config.dbName;
+    openNewDatabase(_config.dbName);
+    localStorageSetItem('db-name', configParams.dbName);
   }
   return configParams;
 }
@@ -90,12 +97,7 @@ function initConfig() {
   configParams.yomConsoleEnable = localStorageGetItem('yom-console-enable') || '1';
   configParams.chromeConsoleEnable = localStorageGetItem('chrome-console-enable') || '1';
   configParams.workerBaseUrl = localStorageGetItem('worker-base-url') || '';
-  console.log('yom initConfig logLevel', configParams.logLevel)
-  console.log('yom initConfig logRorate', configParams.logRorate, 'h')
-  console.log('yom initConfig yomNetworkEnable', configParams.yomNetworkEnable)
-  console.log('yom initConfig yomConsoleEnable', configParams.yomConsoleEnable)
-  console.log('yom initConfig chromeConsoleEnable', configParams.chromeConsoleEnable)
-  console.log('yom initConfig workerBaseUrl', configParams.workerBaseUrl)
+  console.table('yom initConfig', configParams)
 }
 
 initConfig();

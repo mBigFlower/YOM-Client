@@ -169,30 +169,30 @@ function startNetworkInterval() {
 let db; // 声明全局变量db
 
 // 打开数据库
-const openRequest = indexedDB.open("devtoolsLibTest", 11);
+// const openRequest = indexedDB.open("devtoolsLibTest", 11);
 
-openRequest.onupgradeneeded = function (event) {
-  console.log('onupgradeneeded', event);
-  db = event.target.result; // 将db赋值为全局变量
+// openRequest.onupgradeneeded = function (event) {
+//   console.log('onupgradeneeded', event);
+//   db = event.target.result; // 将db赋值为全局变量
 
-  if (!db.objectStoreNames.contains("consoles")) {
-    let store = db.createObjectStore("consoles", {
-      keyPath: "id", autoIncrement: true
-    });
-    store.createIndex('timestamp', 'timestamp', { unique: false }); // 表示可以重复
-    store.createIndex('type', 'type', { unique: false }); // 表示可以重复
-    store.createIndex('data', 'data', { unique: false }); // 表示可以重复
-  }
-};
+//   if (!db.objectStoreNames.contains("consoles")) {
+//     let store = db.createObjectStore("consoles", {
+//       keyPath: "id", autoIncrement: true
+//     });
+//     store.createIndex('timestamp', 'timestamp', { unique: false }); // 表示可以重复
+//     store.createIndex('type', 'type', { unique: false }); // 表示可以重复
+//     store.createIndex('data', 'data', { unique: false }); // 表示可以重复
+//   }
+// };
 
-openRequest.onsuccess = function (event) {
-  console.log("数据库打开成功");
-  db = event.target.result; // 将db赋值为全局变量
-};
+// openRequest.onsuccess = function (event) {
+//   console.log("数据库打开成功");
+//   db = event.target.result; // 将db赋值为全局变量
+// };
 
-openRequest.onerror = function (event) {
-  console.error("打开数据库失败：", event.target.errorCode);
-};
+// openRequest.onerror = function (event) {
+//   console.error("打开数据库失败：", event.target.errorCode);
+// };
 
 // 添加数据到consoles表的函数
 function addData(data) {
@@ -232,6 +232,16 @@ async function startWorker() {
 
   worker.port.start(); // 开始通信
   worker.port.postMessage('Hello from Main Thread!'); // 发送消息给 SharedWorker
+
+
+  // var oReq = new XMLHttpRequest();
+  // oReq.addEventListener("load", (e) => {
+  //   console.log('setXHRRequest', e);
+  // });
+  // // oReq.open("GET", 'language/en-US.json')
+  // // oReq.open("GET", 'http://10.110.13.31:5173/public/Yesterday Once More.mp3')
+  // oReq.open("GET", 'http://www.baud.com')
+  // oReq.send();
 }
 
 </script>

@@ -1698,7 +1698,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.npmmirror.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-yom@1.2.1:
-  version "1.2.1"
-  resolved "http://192.168.240.32:9999/yom/-/yom-1.2.1.tgz#f8d7131f4ebffb604319381ca84b61238e6df813"
-  integrity sha512-UwYIqt3WVdvqv6tdswLBtgxFRhAnfVeEf87Jcv3npW4Z5Pmbk2Q0v+BTWYT1NVVzHaGfOdP8kazwC1psk3nqFQ==
+yom@1.2.3:
+  version "1.2.3"
+  resolved "http://192.168.240.32:9999/yom/-/yom-1.2.3.tgz#31c73ac6b0271b24ffbe472f2038d8aafc08c854"
+  integrity sha512-MGvwA49aLacB9YMb7hq4EAQf5s83zgq6TkB3rofWO5V2Ll/PZ2P4csvBpBa2tHp/kjuasuM/xXgtwsTJf/+W1Q==
