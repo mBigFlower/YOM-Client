@@ -4,6 +4,7 @@ import { Event } from './common/protocol';
 import { addNetwork, getNetworks } from './datacenter';
 import uuid from 'string-random';
 import { isSelf } from './common/utils.js'
+import { FilterType, isNeedFilter } from './filter'
 
 const getTimestamp = () => Date.now() / 1000;
 
@@ -66,10 +67,6 @@ export default class Network {
    */
   enable() {
     this.isEnable = true;
-    // getNetworks('2023-01-01', '2023-12-12').then(arr => {
-    //   console.log('getNetworks', arr)
-    //   arr.forEach(item => this.send(item.data));
-    // })
   }
 
   /**
@@ -138,17 +135,6 @@ export default class Network {
     const xhrOpen = XMLHttpRequest.prototype.open;
     const xhrSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
 
-    // XMLHttpRequest.prototype.open = function (...params) {
-    //   const [method, url] = params;
-    //   this.$$request = {
-    //     method,
-    //     url: getAbsoultPath(url),
-    //     requestId: instance.getRequestId(),
-    //     headers: Network.getDefaultHeaders(),
-    //   };
-    //   if(isSelf()) params[1] = this.$$request.url
-    //   xhrOpen.apply(this, params);
-    // };
     XMLHttpRequest.prototype.open = function (method, url, ...rest) {
       const _url = getAbsoultPath(url)
       this.$$request = {
@@ -165,11 +151,10 @@ export default class Network {
 
       const request = this.$$request;
       const { requestId, url, method } = request;
-      if (method.toLowerCase() === 'post') {
+      if (method.toLowerCase() === 'post' && !isNeedFilter(url, FilterType.NoRequestBody)) {
         request.postData = data;
         request.hasPostData = !!data;
       }
-
       instance.socketSend({
         method: Event.requestWillBeSent,
         params: {
@@ -205,7 +190,7 @@ export default class Network {
         if (this.responseType === '' || this.responseType === 'text') {
           // Cache the response result after the request ends, which will be used when getResponseBody
           // instance.responseText.set(this.$$request.requestId, this.responseText);
-
+          if (isNeedFilter(url, FilterType.NoResponseBody)) return;
           addNetwork({
             method: Event.responseBody,
             params: {
@@ -256,7 +241,7 @@ export default class Network {
         headers: Network.getDefaultHeaders(),
       };
 
-      if (method.toLowerCase() === 'post') {
+      if (method.toLowerCase() === 'post' && !isNeedFilter(url, FilterType.NoRequestBody)) {
         sendRequest.postData = data;
         sendRequest.hasPostData = !!data;
       }
@@ -307,6 +292,7 @@ export default class Network {
       })
         .then((responseBody) => {
           // instance.responseText.set(requestId, responseBody);
+          if (isNeedFilter(url, FilterType.NoResponseBody)) return;
           addNetwork({
             method: Event.responseBody,
             params: {
@@ -355,7 +341,7 @@ export default class Network {
         headers: Network.getDefaultHeaders(),
       };
 
-      if (method.toLowerCase() === 'post') {
+      if (method.toLowerCase() === 'post' && !isNeedFilter(url, FilterType.NoRequestBody)) {
         sendRequest.postData = data;
         sendRequest.hasPostData = !!data;
       }
@@ -406,6 +392,7 @@ export default class Network {
       })
         .then((responseBody) => {
           // instance.responseText.set(requestId, responseBody);
+          if (isNeedFilter(url, FilterType.NoResponseBody)) return;
           addNetwork({
             method: Event.responseBody,
             params: {

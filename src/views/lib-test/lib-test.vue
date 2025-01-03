@@ -45,11 +45,22 @@
 import { ref, computed, reactive } from 'vue'
 import { Message } from '@arco-design/web-vue';
 import Dexie from 'dexie'
-// import yom from '../../../yom-lib/dist/yom-200a2248.js'
+import yom from '../../../yom-lib/dist/yom.mjs'
 // console.log('6666');
-// console.log('self yom', yom);
+console.log('yom', yom);
+yom.setConfig({
+  "logRorate": 3,
+  "yomNetworkEnable": "1",
+  "yomConsoleEnable": "1",
+  "chromeConsoleEnable": "1",
+  "workerBaseUrl": "",
+  "networkFilter": [{ url: 'http://10.110.13.54:10086/', filter: 2 }]
+})
+yom.addCallback(function (data) {
+  console.dir(data)
+})
 
-console.log('yom', window.yom)
+console.log('yom window', window.yom)
 
 const form = reactive({
   consoleContent: '{"timestamp":1724609400123,"type":"log","data":["MQ:topic_device_state_sync",{"header":{"system_id":"ICC","subsystem_id":"ICC-CTIServer","msgid":"00355e22-78fc-42fa-942e-5d74dd0c0bdd","related_id":"","send_time":"2024-08-25 18:10:00","cmd":"device_state_sync","request":"topic_device_state_sync","request_type":"1","reponse":"","reponse_type":"","cmsproperty":""},"body":{"acd":"5201","device":"12208","device_type":"ipphone","call_direction":"in","callref_id":"20240825180955006604","related_callref_id":"","csta_callref_id":"6604","caller_id":"2615630939","called_id":"12208","original_caller_id":"2615630939","original_called_id":"1600","state":"hangupstate","time":"2024-08-25 18:10:00","dept_code":"CEO PRINCIPAL@100000000000","dept_name":"CEO PRINCIPAL","register":"","held_call_refid":"","active_call_refid":"","hangup_type":"release","only_update_status":""}}]}',
@@ -71,8 +82,8 @@ const onStartClick = async () => {
   // });
   // await mockInsertConsoles();
   // await mockInsertNetworks();
-  startConsoleInterval();
-  // startNetworkInterval();
+  // startConsoleInterval();
+  startNetworkInterval();
 };
 
 async function mockInsertConsoles() {
@@ -153,14 +164,18 @@ function startNetworkInterval() {
   console.log('startNetworkInterval', form);
   if (!form.networkContent1 || !form.networkContent2 || !form.networkContent3 || !form.networkContent4 || !form.interval) return;
   networkInterval = setInterval(() => {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        console.log(xhr.responseText);
-      }
-    };
-    xhr.open("GET", "https://www.baidu.com", true);
-    xhr.send();
+    // var xhr = new XMLHttpRequest();
+    // xhr.onreadystatechange = function () {
+    //   if (xhr.readyState == 4 && xhr.status == 200) {
+    //     console.log(xhr.responseText);
+    //   }
+    // };
+    // xhr.open("GET", "https://www.baidu.com", true);
+    // xhr.send();
+
+    fetch('http://10.110.13.54:10086/test', { method: 'POST',  }).then(res => {
+      console.log('res', res);
+    }).catch(err => console.error('err', err));
   }, 500);
 }
 //#endregion
@@ -224,8 +239,8 @@ function addData(data) {
 
 async function startWorker() {
   const worker = new SharedWorker(new URL('./sharedworker', import.meta.url), {
-      type: 'module',
-    });
+    type: 'module',
+  });
   worker.port.onmessage = function (event) {
     console.log('Main thread received:', event.data);
   };

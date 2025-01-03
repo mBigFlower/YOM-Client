@@ -1,6 +1,6 @@
 
 
-import { clearDataRegularly, getConsole, getNetworks, downloadData, openNewDatabase } from './datacenter';
+import { clearDataRegularly, getConsole, getNetworks, downloadData, openNewDatabase, addCallback } from './datacenter';
 import { startRecordClick, downloadRecord } from './record/recorderImpl.js';
 import { webrtc } from './record/lib.webrtc.js';
 import { addOverlay } from './export-panel';
@@ -96,5 +96,6 @@ export default {
   downloadFile2Local,
   openNewDatabase,
   recordScreen,
+  addCallback,
   ...config,
 }

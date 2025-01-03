@@ -46,6 +46,16 @@ export async function getNetworks(startTime, endTime) {
   return await dbGetNetwork(startTime, endTime);
 }
 
+//#region 回调事件
+let mainCallback;
+export function addCallback(callback) {
+  mainCallback = callback;
+}
+export function removeCallback(callback) {
+  mainCallback = undefined;
+}
+//#endregion
+
 /**
  * 定期清理数据库中的数据
  */
@@ -107,38 +117,12 @@ export function startClearInterval() {
 
 //#region 数据库相关的基本语句
 
-
 //#region 控制台日志
 let consoleCount = 0;
 function dbAddConsole(data) {
-  consoleCount++;
-  // 测试不够，先不发布此处
-  // if (consoleCount > 0 && consoleCount % 100 === 0) {
-  //   console.dir('[Console] write too fast !!!, queue count:' + consoleCount);
-  //   const alarmData = {
-  //     type: 'alarm',
-  //     timestamp: Date.now(),
-  //     data: {
-  //       title: 'Console',
-  //       content: `Write too fast!!!, queue count:${consoleCount}`,
-  //     }
-  //   }
-  //   db[ConsleTableName].put(alarmData)
-  // }
+  remarkConsoleIntoDb(ConsleTableName, 'add');
   return db[ConsleTableName].put(data).then(res => {
-    consoleCount--;
-    // if (consoleCount > 0 && consoleCount % 100 === 0) {
-    //   console.dir('[Console] write over, queue count:' + consoleCount);
-    //   const alarmData = {
-    //     type: 'alarm',
-    //     timestamp: Date.now(),
-    //     data: {
-    //       title: 'Console',
-    //       content: `Write over, queue count:${consoleCount}`,
-    //     }
-    //   }
-    //   db[ConsleTableName].put(alarmData)
-    // }
+    remarkConsoleIntoDb(ConsleTableName, 'remove');
   });
 }
 async function dbGetConsole(beginTime, endTime) {
@@ -155,17 +139,38 @@ export async function getConsoleCount() {
 export async function dbBulkAddConsole(data) {
   return await db[ConsleTableName].bulkPut(data)
 }
+/**
+ * 监控写库情况，写入过快会告警，每积压100条告警一次
+ * @param {表名称} ConsleTableName 
+ * @param {入库类型} intoDbType 
+ */
+function remarkConsoleIntoDb(consleTableName, intoDbType = 'add'){
+  if(intoDbType === 'add') consoleCount++;
+  else consoleCount--;
+  if (consoleCount > 0 && consoleCount % 100 === 0) {
+    const contentStart = intoDbType === 'add' ? 'Write too fast!!!' : 'Write over';
+    const type = intoDbType === 'add' ? 'alarm' : 'unalarm';
+    const alarmData = {
+      type,
+      timestamp: Date.now(),
+      data: {
+        title: 'Console',
+        content: `${contentStart}, queue count:${consoleCount}`,
+      }
+    }
+    // 回调给上层
+    if(mainCallback) mainCallback(alarmData);
+    db[consleTableName].put(alarmData)
+  }
+}
 //#endregion
 
 //#region 网络
 let networkCount = 0;
 function dbAddNetwork(data) {
-  networkCount++;
-  // if (networkCount % 100 === 0) {
-  //   console.dir('[Network] Reduce the write frequency !!!, queue count:' + networkCount);
-  // }
+  remarkNetworkIntoDb(NetworkTableName, 'add');
   return db[NetworkTableName].put(data).then(res => {
-    networkCount--;
+    remarkNetworkIntoDb(NetworkTableName, 'remove');
   });;
 }
 export async function dbBulkAddNetwork(data) {
@@ -181,6 +186,30 @@ async function dbGetNetwork(beginTime, endTime) {
  */
 export async function getNetworkCount() {
   return await db[NetworkTableName].count();
+}
+/**
+ * 监控写库情况，写入过快会告警，每积压100条告警一次
+ * @param {表名称} networkTableName 
+ * @param {入库类型} intoDbType 
+ */
+function remarkNetworkIntoDb(networkTableName, intoDbType = 'add'){
+  if(intoDbType === 'add') networkCount++;
+  else networkCount--;
+  if (networkCount > 0 && networkCount % 100 === 0) {
+    const contentStart = intoDbType === 'add' ? 'Write too fast!!!' : 'Write over';
+    const type = intoDbType === 'add' ? 'alarm' : 'unalarm';
+    const alarmData = {
+      type,
+      timestamp: Date.now(),
+      data: {
+        title: 'Network',
+        content: `${contentStart}, queue count:${networkCount}`,
+      }
+    }
+    // 回调给上层
+    if(mainCallback) mainCallback(alarmData);
+    db[networkTableName].put(alarmData)
+  }
 }
 //#endregion
 

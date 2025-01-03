@@ -1,5 +1,6 @@
 import { localStorageGetItem, localStorageSetItem } from './common/utils'
 import { openNewDatabase } from './datacenter';
+import { initNetworkFilter } from './filter';
 /** 默认清理多久前的日志，单位：小时 */
 const DEFAULT_LOG_RORATE = 3;
 export const LogLevel = {
@@ -23,6 +24,14 @@ export const configParams = {
   chromeConsoleEnable: '1',
   workerBaseUrl: '',
   dbName: '',
+  /** 
+   * 为了避免network输出过多，此处通过 filter 进行精简
+   * {url: '', filter: ''}
+   * 1：过滤请求body
+   * 2：过滤响应body
+   * 3：同时过滤请求和响应的body
+   */
+  networkFilter: [],
 }
 
 export function setConfig(_config) {
@@ -56,6 +65,10 @@ export function setConfig(_config) {
     configParams.dbName = _config.dbName;
     openNewDatabase(_config.dbName);
     localStorageSetItem('db-name', configParams.dbName);
+  }
+  if (_config.networkFilter !== undefined) {
+    configParams.networkFilter = _config.networkFilter;
+    initNetworkFilter(_config.workerBaseUrl, _config.networkFilter);
   }
   return configParams;
 }
