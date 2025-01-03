@@ -45,16 +45,10 @@ yom.setConfig({
 |chromeConsoleEnable|enable chrome console log; "1":enable, others means disable|"1"|
 |workerBaseUrl|base url for worker|""|
 |dbName|database name|location.pathname|
-|networkFilter|network过滤写库|filterItem数组|
+|networkFilter|如果不希望 **network** 库中存太多内容，可用此过滤|[{url, filter}]|
 
-**filterItem**
-|filterItem|description|default|
-|---|---|---|
-|url|pathname||
-|filter|FilterType||
 
 ### networkFilter详细说明
-如果不希望network库中存太多内容，可用此过滤
 数组中的 item 目前有两个字段
 
 - url： 请求的 pathname（请求的 origin 我会根据当前页面自动获取）
@@ -63,12 +57,14 @@ yom.setConfig({
 **url**
 
 举个例子：
-https://10.115.24.110:26000/icc-incident-service/icc/server/get_alarm_state_statistics_request
+
+`https://10.115.24.110:26000/icc-incident-service/icc/server/get_alarm_state_statistics_request`
 
 这么一个请求，传给我
-/icc-incident-service/icc/server/get_alarm_state_statistics_request
 
-https://10.115.24.110:26000 我从当前页面里能取到
+`/icc-incident-service/icc/server/get_alarm_state_statistics_request`
+
+(`https://10.115.24.110:26000` 我从当前页面里能取到)
 
 **filter**
 
@@ -77,6 +73,4 @@ https://10.115.24.110:26000 我从当前页面里能取到
 |0|整个请求 所有都不保存|
 |1|请求体不保存|
 |2|响应体不保存|
-|3|请求体 和 响应体 不保存|
-
-3 只是不保存body内容，0 是整个请求所有都不保存（header什么的都不存）
+|3|请求体 和 响应体 不保存；请求地址、Header等仍然保存|

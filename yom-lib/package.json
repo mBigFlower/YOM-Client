@@ -1,6 +1,6 @@
 {
   "name": "yom",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "description": "[Yesterday Once More] store console and network to indexdb",
   "main": "dist/yom.mjs",
   "scripts": {
