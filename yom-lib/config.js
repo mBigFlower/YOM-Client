@@ -27,6 +27,7 @@ export const configParams = {
   /** 
    * 为了避免network输出过多，此处通过 filter 进行精简
    * {url: '', filter: ''}
+   * 0：与此url相关的请求和响应都不保存
    * 1：过滤请求body
    * 2：过滤响应body
    * 3：同时过滤请求和响应的body
@@ -71,36 +72,6 @@ export function setConfig(_config) {
     initNetworkFilter(_config.workerBaseUrl, _config.networkFilter);
   }
   return configParams;
-}
-
-export function setConfigLogLevel(logLevel) {
-  if (+logLevel === NaN || +logLevel < 0 || +logLevel > 4)
-    throw new Error('Invalid log level');;
-  configParams.logLevel = logLevel;
-  localStorageSetItem('yom-log-level', logLevel);
-  return true;
-}
-
-export function setConfigLogRorate(logRorate) {
-  configParams.logRorate = logRorate;
-  localStorageSetItem('yom-log-rotate', logRorate);
-  return true;
-}
-
-export function setYomNetworkEnable(isEnable) {
-  configParams.yomNetworkEnable = isEnable;
-  localStorageSetItem('yom-network-enable', isEnable);
-  return true;
-}
-export function setYomConsoleEnable(isEnable) {
-  configParams.yomConsoleEnable = isEnable;
-  localStorageSetItem('yom-console-enable', isEnable);
-  return true;
-}
-export function setChromeConsoleEnable(isEnable) {
-  configParams.chromeConsoleEnable = isEnable;
-  localStorageSetItem('chrome-console-enable', isEnable);
-  return true;
 }
 
 function initConfig() {

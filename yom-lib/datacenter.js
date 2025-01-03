@@ -106,7 +106,6 @@ function clearDataByLines() {
 
 /**
  * 开启定时清理数据库中的数据
- * （10分钟一次）
  */
 export function startClearInterval() {
   setInterval(() => {

@@ -1,7 +1,7 @@
 //#region Network 过滤
 export const FilterType = {
   /** 整个请求 所有都不保存 */
-  //   None: 0, // 有点麻烦，暂时不支持
+  None: 0,
   /** 请求体不保存 */
   NoRequestBody: 1,
   /** 响应体不保存 */
@@ -11,6 +11,7 @@ export const FilterType = {
 };
 export const networkFilterMap = new Map();
 export function initNetworkFilter(workerBaseUrl, filterList) {
+  networkFilterMap.clear();
   const origin = workerBaseUrl || self.location.origin;
   filterList.forEach((item) => {
     if (networkFilterMap.has(item.url)) return;
@@ -18,16 +19,13 @@ export function initNetworkFilter(workerBaseUrl, filterList) {
   });
   console.log("networkFilterMap", networkFilterMap);
 }
-
-export function isNeedFilter(url, filterType) {
-  const type = networkFilterMap.get(url);
-  console.log("isNeedFilter", url, type, filterType);
-  //   if (type === FilterType.None) return true;
-  if (filterType === FilterType.NoRequestBody) return (type & 0x1) === 1;
-  else if (filterType === FilterType.NoResponseBody) return (type & 0x02) === 2;
-  else {
-    console.warn("unknown filter type:", filterType);
-    return false;
-  }
+export function isUrlFiltered(url) {
+  return networkFilterMap.get(url) === FilterType.None;
+}
+export function isReqBodyFiltered(url) {
+  return networkFilterMap.get(url) === FilterType.NoRequestBody;
+}
+export function isResBodyFiltered(url) {
+  return networkFilterMap.get(url) === FilterType.NoResponseBody;
 }
 //#endregion
