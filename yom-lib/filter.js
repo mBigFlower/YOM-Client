@@ -10,12 +10,12 @@ export const FilterType = {
   NoAllBody: 3,
 };
 export const networkFilterMap = new Map();
-export function initNetworkFilter(workerBaseUrl, filterList) {
+export function initNetworkFilter(filterList) {
   networkFilterMap.clear();
-  const origin = workerBaseUrl || self.location.origin;
   filterList.forEach((item) => {
-    if (networkFilterMap.has(item.url)) return;
-    networkFilterMap.set(origin + item.url, item.filter);
+    const url = item.isFullPath ? item.url : self.location.origin + item.url;
+    if (networkFilterMap.has(url)) return;
+    networkFilterMap.set(url, item.filter);
   });
   console.log("networkFilterMap", networkFilterMap);
 }

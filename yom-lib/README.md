@@ -45,13 +45,14 @@ yom.setConfig({
 |chromeConsoleEnable|enable chrome console log; "1":enable, others means disable|"1"|
 |workerBaseUrl|base url for worker|""|
 |dbName|database name|location.pathname|
-|networkFilter|如果不希望 **network** 库中存太多内容，可用此过滤|[{url, filter}]|
+|networkFilter|如果不希望 **network** 库中存太多内容，可用此过滤|[{url, isFullPath, filter}]|
 
 
 ### networkFilter详细说明
 数组中的 item 目前有两个字段
 
 - url： 请求的 pathname（请求的 origin 我会根据当前页面自动获取）
+- isFullPath: 请求的 url 是否是全路径（如果是 true，则yom不会自动拼接url）
 - filter： 过滤的类型（需要过滤哪些内容）
 
 **url**
@@ -65,6 +66,12 @@ yom.setConfig({
 `/icc-incident-service/icc/server/get_alarm_state_statistics_request`
 
 (`https://10.115.24.110:26000` 我从当前页面里能取到)
+
+**isFullPath**
+
+当出现不需要 yom 拼接地址时，可在 url 传入全路径，并将 isFullPath 设置为 true
+
+`isFullPath: true`
 
 **filter**
 

@@ -69,7 +69,7 @@ export function setConfig(_config) {
   }
   if (_config.networkFilter !== undefined) {
     configParams.networkFilter = _config.networkFilter;
-    initNetworkFilter(_config.workerBaseUrl, _config.networkFilter);
+    initNetworkFilter(_config.networkFilter);
   }
   return configParams;
 }
