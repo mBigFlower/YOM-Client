@@ -1,13 +1,19 @@
 // import yom from 'yom'
 import yom from '../../../yom-lib/dist/yom.mjs'
+import { FilterType } from '../../../yom-lib/filter';
 console.log('self yom', yom);
 yom.setConfig({
   "logRorate": 3,
   "yomNetworkEnable": "1",
   "yomConsoleEnable": "1",
   "chromeConsoleEnable": "1",
-  "workerBaseUrl": "http://10.110.13.31:5173/public/",
+  "workerBaseUrl": "",
   'dbName': '',
+  'networkFilter': [{
+    url: 'http://10.110.13.54:10086/',
+    isFullPath: true,
+    filter: 2,
+  }],
 });
 console.log('6666');
 self.onconnect = function (event) {
@@ -32,7 +38,7 @@ self.onconnect = function (event) {
 };
 
 function setXHRRequest() {
-  fetch('http://10.110.13.54:30001/health', { method: 'HEAD' }).then(res=>{
+  fetch('http://10.110.13.54:10086', { method: 'GET' }).then(res=>{
     console.log('res', res);
   }).catch(err=> console.error('err', err));
 }
