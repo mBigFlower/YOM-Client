@@ -76,7 +76,11 @@ function getRequestParams(data) {
   let requestBody = undefined
   data?.forEach(item => {
     if (item.method === 'Network.requestWillBeSent') {
-      requestBody = JSON.parse(item.request?.postData || '{}')
+      try {
+        requestBody = JSON.parse(item.request?.postData || "{}");
+      } catch (error) {
+        requestBody = item.request?.postData;
+      }
     }
   })
   return requestBody

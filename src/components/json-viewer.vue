@@ -95,4 +95,7 @@ const props = defineProps({
       }
     }
   }
+  .jv-tooltip.right {
+    right: -20px !important;
+  }
 }</style>
